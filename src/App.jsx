@@ -181,6 +181,23 @@ function App() {
     });
   }, []); // Only run once on mount
 
+  // Pull periodico ogni 30 secondi — aggiorna se cloud è più recente e non ci sono modifiche locali
+  React.useEffect(() => {
+    const interval = setInterval(async () => {
+      const current = useStore.getState();
+      if (current.isUnsynced) return; // non sovrascrivere modifiche locali non salvate
+      const cloud = await syncModule.pullFromCloud();
+      if (!cloud?.state) return;
+      if (!(cloud.state.products?.length > 0 || cloud.state.supermarkets?.length > 0)) return;
+      const cloudTime = cloud.lastUpdated || 0;
+      if (cloudTime > current.lastPushedAt) {
+        replaceState(cloud.state);
+        setIsUnsynced(false);
+      }
+    }, 30000);
+    return () => clearInterval(interval);
+  }, []);
+
   const [isAddModalOpen, React_useState] = React.useState(false);
 
   if (!isAuthenticated) {
