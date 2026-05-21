@@ -4,7 +4,7 @@
  */
 
 const getBase = () => {
-    const base = window.__SPESA_BASE__ || '/app/sp3s4/'
+    const base = window.__SPESA_BASE__ || '/'
     return base.endsWith('/') ? base : base + '/'
 }
 

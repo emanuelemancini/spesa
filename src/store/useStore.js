@@ -9,7 +9,7 @@ const useStore = create(
       readNotificationIds: [],
       user: {
         name: 'Emanuele',
-        avatar: '/app/sp3s4/avatar.jpg'
+        avatar: '/avatar.jpg'
       },
       isAuthenticated: false,
       isUnsynced: false,

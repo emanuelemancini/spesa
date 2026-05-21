@@ -188,7 +188,7 @@ function App() {
   }
 
   return (
-    <Router basename="/app/sp3s4/">
+    <Router basename="/">
       <div className="min-h-screen bg-background-light dark:bg-background-dark pb-24">
         <Header />
         <main className="max-w-md mx-auto px-4 pt-4">

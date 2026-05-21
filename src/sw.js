@@ -9,7 +9,7 @@ precacheAndRoute(self.__WB_MANIFEST)
 // ── Push Notifications ────────────────────────────────────────────────────────
 
 self.addEventListener('push', (event) => {
-  let data = { title: 'La Mia Spesa', body: 'Hai notifiche in attesa', icon: '/app/sp3s4/icon.png' }
+  let data = { title: 'La Mia Spesa', body: 'Hai notifiche in attesa', icon: '/icon.png' }
 
   if (event.data) {
     try { data = { ...data, ...event.data.json() } } catch (_) {}
@@ -18,10 +18,10 @@ self.addEventListener('push', (event) => {
   event.waitUntil(
     self.registration.showNotification(data.title, {
       body: data.body,
-      icon: data.icon || '/app/sp3s4/icon.png',
-      badge: data.icon || '/app/sp3s4/icon.png',
+      icon: data.icon || '/icon.png',
+      badge: data.icon || '/icon.png',
       tag: data.tag || 'spesa-notification',
-      data: data.url || '/app/sp3s4/',
+      data: data.url || '/',
       vibrate: [200, 100, 200],
     })
   )
@@ -29,11 +29,11 @@ self.addEventListener('push', (event) => {
 
 self.addEventListener('notificationclick', (event) => {
   event.notification.close()
-  const url = event.notification.data || '/app/sp3s4/'
+  const url = event.notification.data || '/'
   event.waitUntil(
     clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
       for (const client of clientList) {
-        if (client.url.includes('/app/sp3s4/') && 'focus' in client) {
+        if (client.url.includes('/') && 'focus' in client) {
           return client.focus()
         }
       }
