@@ -75,10 +75,10 @@ function ProductRow({ product, onOpen, onToggleBought, dragHandleProps, isReorde
   const status     = product.status; // 'to-buy' | 'bought' | 'opened' | 'skipped'
 
   const borderColor =
-    status === 'bought'  ? 'border-l-green-400' :
-    status === 'to-buy'  ? 'border-l-orange-400' :
-    status === 'opened'  ? 'border-l-blue-400' :
-                           'border-l-red-400';
+    status === 'bought'  ? 'border-l-green-200' :
+    status === 'to-buy'  ? 'border-l-orange-200' :
+    status === 'opened'  ? 'border-l-blue-200' :
+                           'border-l-red-200';
 
   return (
     <div
