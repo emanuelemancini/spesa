@@ -108,6 +108,39 @@ export default function DataManagement() {
         }
     }
 
+    const handleImportFile = (e) => {
+        const file = e.target.files?.[0]
+        if (!file) return
+        const reader = new FileReader()
+        reader.onload = (ev) => {
+            try {
+                const json = JSON.parse(ev.target.result)
+                // Supporta sia il formato Aruba { data: "...", lastUpdated: ... }
+                // sia un dump diretto dello state { products: [...], supermarkets: [...] }
+                let state = null
+                if (json.data && typeof json.data === 'string') {
+                    const parsed = JSON.parse(json.data)
+                    state = parsed.state || parsed
+                } else if (json.products || json.supermarkets) {
+                    state = json
+                } else if (json.state) {
+                    state = json.state
+                }
+                if (state && (state.products || state.supermarkets)) {
+                    replaceState(state)
+                    showToast('Importazione completata!', 'success')
+                    setTimeout(() => navigate('/'), 800)
+                } else {
+                    showToast('Formato file non riconosciuto', 'error')
+                }
+            } catch {
+                showToast('Errore nella lettura del file', 'error')
+            }
+        }
+        reader.readAsText(file)
+        e.target.value = ''
+    }
+
     const handleRestore = async (backup) => {
         const state = await syncModule.restoreBackup(backup.filename)
         if (state) {
@@ -199,6 +232,19 @@ export default function DataManagement() {
                             </div>
                             <span className="material-symbols-outlined !text-[20px] text-slate-300 group-hover:text-slate-400">chevron_right</span>
                         </button>
+
+                        {/* Importa da file */}
+                        <label className="w-full flex items-center gap-4 p-4 hover:bg-slate-50 active:bg-slate-100 transition-colors group cursor-pointer">
+                            <div className="size-12 rounded-2xl bg-green-50 text-green-500 flex items-center justify-center">
+                                <span className="material-symbols-outlined">upload_file</span>
+                            </div>
+                            <div className="flex-1 text-left">
+                                <p className="text-sm font-black text-slate-900">Importa da file</p>
+                                <p className="text-[11px] font-bold text-slate-400 mt-0.5">Carica un backup da Aruba o da file JSON</p>
+                            </div>
+                            <span className="material-symbols-outlined !text-[20px] text-slate-300 group-hover:text-slate-400">chevron_right</span>
+                            <input type="file" accept=".json" className="hidden" onChange={handleImportFile} />
+                        </label>
 
                     </div>
                 </div>
