@@ -256,7 +256,14 @@ export default function DataManagement() {
                         <div className="flex gap-2">
                             <button
                                 onClick={async () => {
-                                    const ok = await syncModule.createManualBackup()
+                                    const s = useStore.getState()
+                                    const ok = await syncModule.createManualBackup({
+                                        products: s.products,
+                                        supermarkets: s.supermarkets,
+                                        user: s.user,
+                                        config: s.config,
+                                        readNotificationIds: s.readNotificationIds,
+                                    })
                                     ok ? showToast('Backup creato!', 'success') : showToast('Errore creazione backup', 'error')
                                     await loadBackups()
                                 }}
