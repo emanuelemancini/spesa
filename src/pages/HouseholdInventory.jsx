@@ -169,9 +169,9 @@ const HouseholdInventory = () => {
                       <span className="w-5 text-center text-xs font-black text-slate-900">{product.quantity}</span>
                       <button onClick={(e) => handleUpdateQuantity(e, product.id, product.quantity, 1)} className="size-8 rounded-lg bg-primary text-white flex items-center justify-center active:scale-90 transition-transform shadow-md shadow-primary/20"><span className="material-symbols-outlined !text-sm">add</span></button>
                     </div>
-                    <button onClick={(e) => handleFinishProduct(e, product)} className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-red-50/50 text-red-500 hover:bg-red-100 transition-all active:scale-95 border border-red-100/50">
+                    <button onClick={(e) => handleFinishProduct(e, product)} className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-orange-50 text-orange-500 hover:bg-orange-100 transition-all active:scale-95 border border-orange-100">
                       <span className="material-symbols-outlined !text-sm">shopping_cart</span>
-                      <span className="text-[9px] font-black uppercase tracking-widest">Esaurito</span>
+                      <span className="text-[9px] font-black uppercase tracking-widest">In lista</span>
                     </button>
                   </div>
                 )}
@@ -235,9 +235,9 @@ const HouseholdInventory = () => {
                       <span className="w-5 text-center text-xs font-black text-slate-900">{product.quantity}</span>
                       <button onClick={(e) => handleUpdateQuantity(e, product.id, product.quantity, 1)} className="size-8 rounded-lg bg-primary text-white flex items-center justify-center active:scale-90 transition-transform shadow-md shadow-primary/20"><span className="material-symbols-outlined !text-sm">add</span></button>
                     </div>
-                    <button onClick={(e) => handleFinishProduct(e, product)} className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-red-50/50 text-red-500 hover:bg-red-100 transition-all active:scale-95 border border-red-100/50">
+                    <button onClick={(e) => handleFinishProduct(e, product)} className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-orange-50 text-orange-500 hover:bg-orange-100 transition-all active:scale-95 border border-orange-100">
                       <span className="material-symbols-outlined !text-sm">shopping_cart</span>
-                      <span className="text-[9px] font-black uppercase tracking-widest">Esaurito</span>
+                      <span className="text-[9px] font-black uppercase tracking-widest">In lista</span>
                     </button>
                   </div>
                 )}
