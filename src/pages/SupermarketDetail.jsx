@@ -74,10 +74,16 @@ function ProductRow({ product, onOpen, onToggleBought, dragHandleProps, isReorde
   const isExpiring = !isExpired && product.expiryDate && (new Date(product.expiryDate) - now) < 2 * 86400000;
   const status     = product.status; // 'to-buy' | 'bought' | 'opened' | 'skipped'
 
+  const borderColor =
+    status === 'bought'  ? 'border-l-green-400' :
+    status === 'to-buy'  ? 'border-l-orange-400' :
+    status === 'opened'  ? 'border-l-blue-400' :
+                           'border-l-red-400';
+
   return (
     <div
       onClick={() => !isReordering && onOpen(product)}
-      className={`flex items-center gap-3 rounded-[22px] bg-white p-3 border border-slate-100 shadow-sm transition-all ${isReordering ? '' : 'active:scale-[0.98] cursor-pointer'}`}
+      className={`flex items-center gap-3 rounded-[22px] bg-white p-3 border border-slate-100 border-l-4 ${borderColor} shadow-sm transition-all ${isReordering ? '' : 'active:scale-[0.98] cursor-pointer'}`}
     >
       <DragHandle dragHandleProps={dragHandleProps} />
       <ProductImage product={product} className="size-14 rounded-2xl shrink-0" />
@@ -86,7 +92,7 @@ function ProductRow({ product, onOpen, onToggleBought, dragHandleProps, isReorde
         <p className="text-sm font-black truncate text-slate-900">{product.name}</p>
         <div className="flex flex-wrap items-center gap-1.5 mt-1">
           {product.category && (
-            <span className="text-[9px] font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md">{product.category}</span>
+            <span className="text-[9px] font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded-md uppercase tracking-wide">{product.category}</span>
           )}
           {isExpired && (
             <span className="text-[9px] font-black text-red-500 bg-red-50 px-2 py-0.5 rounded-md">Scaduto</span>
@@ -94,47 +100,46 @@ function ProductRow({ product, onOpen, onToggleBought, dragHandleProps, isReorde
           {isExpiring && (
             <span className="text-[9px] font-black text-amber-600 bg-amber-50 px-2 py-0.5 rounded-md">Scade presto</span>
           )}
-          {product.status === 'opened' && (
-            <span className="text-[9px] font-black text-primary bg-primary/8 px-2 py-0.5 rounded-md">Aperto</span>
+          {status === 'opened' && (
+            <span className="text-[9px] font-black text-blue-500 bg-blue-50 px-2 py-0.5 rounded-md">Aperto</span>
           )}
         </div>
+        {product.quantity > 0 && (
+          <p className="text-[10px] font-bold text-slate-400 mt-1">Qtà: {product.quantity}</p>
+        )}
       </div>
 
       <div onClick={e => e.stopPropagation()} className="shrink-0">
         {status === 'opened' ? (
-          // Blu pastello — Aperto (fuori dal ciclo acquisto)
           <button
             onClick={() => onToggleBought(product.id, 'skipped')}
-            className="flex items-center gap-1 h-9 px-3 bg-blue-100 text-blue-600 border border-blue-200 text-[10px] font-black rounded-full active:scale-90 transition-all"
+            className="flex items-center gap-1.5 px-3 py-2 bg-blue-50 text-blue-500 border border-blue-100 text-[10px] font-black rounded-2xl active:scale-90 transition-all"
           >
-            <span className="material-symbols-outlined !text-[14px]">grocery</span>
+            <span className="material-symbols-outlined !text-sm">grocery</span>
             Aperto
           </button>
         ) : status === 'bought' ? (
-          // Verde pastello — Comprato → click torna a "da comprare" (rosso)
           <button
             onClick={() => onToggleBought(product.id, 'skipped')}
-            className="flex items-center gap-1 h-9 px-3 bg-green-100 text-green-700 border border-green-200 text-[10px] font-black rounded-full active:scale-90 transition-all"
+            className="flex items-center gap-1.5 px-3 py-2 bg-green-50 text-green-600 border border-green-100 text-[10px] font-black rounded-2xl active:scale-90 transition-all"
           >
-            <span className="material-symbols-outlined !text-[14px]">check_circle</span>
+            <span className="material-symbols-outlined !text-sm">check_circle</span>
             Comprato
           </button>
         ) : status === 'to-buy' ? (
-          // Arancione pastello — In lista → click segna comprato (verde)
           <button
             onClick={() => onToggleBought(product.id, 'bought')}
-            className="flex items-center gap-1 h-9 px-3 bg-orange-100 text-orange-600 border border-orange-200 text-[10px] font-black rounded-full active:scale-90 transition-all"
+            className="flex items-center gap-1.5 px-3 py-2 bg-orange-50 text-orange-500 border border-orange-100 text-[10px] font-black rounded-2xl active:scale-90 transition-all"
           >
-            <span className="material-symbols-outlined !text-[14px]">shopping_cart</span>
+            <span className="material-symbols-outlined !text-sm">shopping_cart</span>
             In lista
           </button>
         ) : (
-          // Rosso pastello — Da comprare → click aggiunge alla lista (arancione)
           <button
             onClick={() => onToggleBought(product.id, 'to-buy')}
-            className="flex items-center gap-1 h-9 px-3 bg-red-100 text-red-600 border border-red-200 text-[10px] font-black rounded-full active:scale-90 transition-all"
+            className="flex items-center gap-1.5 px-3 py-2 bg-red-50 text-red-500 border border-red-100 text-[10px] font-black rounded-2xl active:scale-90 transition-all"
           >
-            <span className="material-symbols-outlined !text-[14px]">add_shopping_cart</span>
+            <span className="material-symbols-outlined !text-sm">add_shopping_cart</span>
             Da comprare
           </button>
         )}
