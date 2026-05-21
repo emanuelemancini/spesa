@@ -64,7 +64,7 @@ const Pantry = () => {
 
   const handleFinishProduct = (e, product) => {
     e.stopPropagation();
-    updateProduct(product.id, { quantity: 0, status: 'to-buy' });
+    updateProduct(product.id, { status: 'to-buy' });
   };
 
   const handleReorder = (categoryItems, newIds) => {
@@ -202,10 +202,17 @@ const Pantry = () => {
                             <span className="w-5 text-center text-xs font-black text-slate-900">{product.quantity}</span>
                             <button onClick={(e) => handleUpdateQuantity(e, product.id, product.quantity, 1)} className="size-8 rounded-lg bg-primary text-white flex items-center justify-center active:scale-90 transition-transform shadow-md shadow-primary/20"><span className="material-symbols-outlined !text-sm">add</span></button>
                           </div>
-                          <button onClick={(e) => handleFinishProduct(e, product)} className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-red-50/50 text-red-500 hover:bg-red-100 transition-all active:scale-95 border border-red-100/50">
-                            <span className="material-symbols-outlined !text-sm">shopping_cart</span>
-                            <span className="text-[9px] font-black uppercase tracking-widest">Esaurito</span>
-                          </button>
+                          {product.quantity === 0 && product.status !== 'to-buy' ? (
+                            <button onClick={(e) => handleFinishProduct(e, product)} className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-red-50 text-red-500 hover:bg-red-100 transition-all active:scale-95 border border-red-100">
+                              <span className="material-symbols-outlined !text-sm">shopping_cart</span>
+                              <span className="text-[9px] font-black uppercase tracking-widest">Esaurito</span>
+                            </button>
+                          ) : (
+                            <button onClick={(e) => handleFinishProduct(e, product)} disabled={product.status === 'to-buy'} className={`flex items-center gap-1 px-3 py-1.5 rounded-lg transition-all active:scale-95 border ${product.status === 'to-buy' ? 'bg-orange-50 text-orange-400 border-orange-100 opacity-60 cursor-default' : 'bg-orange-50 text-orange-500 hover:bg-orange-100 border-orange-100'}`}>
+                              <span className="material-symbols-outlined !text-sm">shopping_cart</span>
+                              <span className="text-[9px] font-black uppercase tracking-widest">In lista</span>
+                            </button>
+                          )}
                         </div>
                       )}
                     </div>
