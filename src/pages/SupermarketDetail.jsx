@@ -91,6 +91,7 @@ function ProductRow({ product, onOpen, onToggleBought, dragHandleProps, isReorde
       <div className="flex-1 min-w-0">
         <p className="text-sm font-black truncate text-slate-900">{product.name}</p>
         <div className="flex flex-wrap items-center gap-1.5 mt-1">
+          <span className="text-[9px] font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded-md uppercase tracking-wide">Quantità: {product.quantity ?? 0}</span>
           {product.category && (
             <span className="text-[9px] font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded-md uppercase tracking-wide">{product.category}</span>
           )}
@@ -104,9 +105,6 @@ function ProductRow({ product, onOpen, onToggleBought, dragHandleProps, isReorde
             <span className="text-[9px] font-black text-blue-500 bg-blue-50 px-2 py-0.5 rounded-md">Aperto</span>
           )}
         </div>
-        {product.quantity > 0 && (
-          <p className="text-[10px] font-bold text-slate-400 mt-1">Qtà: {product.quantity}</p>
-        )}
       </div>
 
       <div onClick={e => e.stopPropagation()} className="shrink-0">
