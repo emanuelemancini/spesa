@@ -28,10 +28,9 @@ const Pantry = () => {
 
   const kitchenProducts = products.filter(p => {
     const matchesType = p.type === 'kitchen';
-    const notSkipped = p.status !== 'skipped';
     const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = activeCategory === 'Tutti' || p.category === activeCategory;
-    return matchesType && notSkipped && matchesSearch && matchesCategory;
+    return matchesType && matchesSearch && matchesCategory;
   });
 
   // For Pantry, we might want to highlight expiring items first
