@@ -7,7 +7,7 @@ import ProductImage from '../components/ui/ProductImage';
 import { SortableList, ReorderButton, DragHandle } from '../components/ui/SortableList';
 
 const Pantry = () => {
-  const { products, supermarkets, config, updateProduct, reorderProducts } = useStore();
+  const { products, supermarkets, config, updateProduct, reorderProducts, showToast } = useStore();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = React.useState('');
@@ -64,6 +64,7 @@ const Pantry = () => {
   const handleFinishProduct = (e, product) => {
     e.stopPropagation();
     updateProduct(product.id, { status: 'to-buy' });
+    showToast(`${product.name} aggiunto alla lista`, 'success');
   };
 
   const handleReorder = (categoryItems, newIds) => {
@@ -195,7 +196,7 @@ const Pantry = () => {
                         </div>
                       </div>
                       {!isReordering && (
-                        <div className="flex flex-col items-end gap-2">
+                        <div className="flex flex-col items-end gap-2" onClick={e => e.stopPropagation()}>
                           <div className="flex items-center gap-1.5 bg-slate-50 p-1 rounded-xl border border-slate-100 shadow-inner">
                             <button onClick={(e) => handleUpdateQuantity(e, product.id, product.quantity, -1)} className="size-8 rounded-lg bg-white border border-slate-100 text-slate-600 flex items-center justify-center active:scale-90 transition-transform shadow-sm"><span className="material-symbols-outlined !text-sm">remove</span></button>
                             <span className="w-5 text-center text-xs font-black text-slate-900">{product.quantity}</span>
