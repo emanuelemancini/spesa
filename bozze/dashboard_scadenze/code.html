@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+
+<html lang="it"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#4cae4f",
+                        "background-light": "#f6f7f6",
+                        "background-dark": "#151d15",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<title>Smart Grocery Dashboard</title>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen flex flex-col">
+<header class="sticky top-0 z-50 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-primary/10">
+<div class="flex items-center justify-between px-4 py-4">
+<div class="flex items-center gap-3">
+<div class="size-10 rounded-full bg-primary/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">account_circle</span>
+</div>
+<div>
+<p class="text-xs text-slate-500 dark:text-slate-400">Bentornato,</p>
+<h1 class="text-base font-bold leading-none">Marco Rossi</h1>
+</div>
+</div>
+<div class="flex gap-2">
+<button class="size-10 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-600 dark:text-slate-300">
+<span class="material-symbols-outlined text-[22px]">search</span>
+</button>
+<button class="size-10 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-600 dark:text-slate-300 relative">
+<span class="material-symbols-outlined text-[22px]">notifications</span>
+<span class="absolute top-2 right-2 size-2 bg-red-500 rounded-full border-2 border-white dark:border-slate-800"></span>
+</button>
+</div>
+</div>
+</header>
+<main class="flex-1 overflow-y-auto pb-24">
+<section class="mt-6">
+<div class="flex items-center justify-between px-4 mb-4">
+<h2 class="text-lg font-bold tracking-tight">Scadenze Imminenti</h2>
+<button class="text-primary text-sm font-semibold">Vedi tutto</button>
+</div>
+<div class="flex overflow-x-auto gap-4 px-4 pb-2 snap-x no-scrollbar">
+<div class="flex-none w-44 snap-start group">
+<div class="relative aspect-square rounded-xl overflow-hidden mb-3 bg-slate-200 shadow-sm">
+<img alt="Latte Intero" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" data-alt="Fresh milk carton on white background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCN6TZXFx5eRiYJTH7FJkVq7AiqhHJJAes99SfbUrPxoBw3gLsmmr4Kv53KVYW85id3OYYwppvlOH2KffD2aDz5oWPAkyrSbcar9kWM8eW0C20enVM4Opd87q9FXbJuNsReJBko6DxRfOdnEVzzVq9Ff57SNqVmeAdNgefkNXzarMlpe0zzHUNG023eUD5seDtLNaiaghFKdwQ3v4ze9pHC_wfNbgbUxH0w9hm4e4i1vZedx9YD0_P2gld8s4Dn_xao0_vKCrSD3l0"/>
+<div class="absolute top-2 right-2 bg-red-500 text-white text-[10px] font-bold px-2 py-1 rounded-full uppercase">Critico</div>
+</div>
+<p class="font-bold text-sm truncate">Latte Intero</p>
+<p class="text-xs text-red-500 font-medium flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">schedule</span> Scade oggi
+                    </p>
+</div>
+<div class="flex-none w-44 snap-start group">
+<div class="relative aspect-square rounded-xl overflow-hidden mb-3 bg-slate-200 shadow-sm">
+<img alt="Yogurt Greco" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" data-alt="Greek yogurt cup with fruits" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCUS4pAmssMg-HuRA1khI0QcxoOVExuxNIiaBZDBELU1jgPbXOJdLAsWAQeJJDp-A5abcspRf7JBf4qiAQlm0phWLtQO3oPQzfA10PKF7KwURQULVD7rGAozpKVp6gOGUKcZEeYzxJrzfyQKIbsJGHhKel2O6H8iOa5Ub7DBwMxwvzNWnJXhMHB1Jc3wPiyUXnfgv38wYzK7c02usEqYKI7e2mJbxoC0Oarz5gFV5AAmvukZS9ta2gI75qLhbZWqJ4heVelY-WV9Mw"/>
+<div class="absolute top-2 right-2 bg-orange-400 text-white text-[10px] font-bold px-2 py-1 rounded-full uppercase">Presto</div>
+</div>
+<p class="font-bold text-sm truncate">Yogurt Greco</p>
+<p class="text-xs text-orange-500 font-medium flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">schedule</span> 2 giorni rimasti
+                    </p>
+</div>
+<div class="flex-none w-44 snap-start group">
+<div class="relative aspect-square rounded-xl overflow-hidden mb-3 bg-slate-200 shadow-sm">
+<img alt="Salmone Fresco" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" data-alt="Fresh raw salmon fillet" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA_vy80lvZQBjhN4ioYq5kduvWJ5o927LREiviyVUCyLlClZpcGd9jkQRU78MZb1Ffv8imsQM9NWc-IA92-OBad09ojwTonn-THy6IB7Hncl83vdPVSECFIhDPaTkfv0rVBGoTkQinFCxvgIL-S-MUPOgVA2MBfMMP9kbGnzO0WvLrENrPXs3ErRa0Wior-5d5oNhF5DMKsFSS66Ts9xUVvFr5QLjbgZwW3DYjfROrxdr7sQw3gOsFDPoG3FiDz0CeTvm5td7-Co-k"/>
+</div>
+<p class="font-bold text-sm truncate">Salmone Fresco</p>
+<p class="text-xs text-slate-500 dark:text-slate-400 font-medium flex items-center gap-1">
+<span class="material-symbols-outlined text-xs text-primary">schedule</span> 4 giorni rimasti
+                    </p>
+</div>
+</div>
+</section>
+<section class="mt-8 px-4">
+<div class="flex items-center justify-between mb-4">
+<h2 class="text-lg font-bold tracking-tight">Prodotti Aperti</h2>
+<span class="bg-primary/10 text-primary text-[11px] font-bold px-2 py-0.5 rounded-full">5 Prodotti</span>
+</div>
+<div class="space-y-3">
+<div class="bg-white dark:bg-slate-800 p-3 rounded-xl border border-slate-100 dark:border-slate-700 shadow-sm flex gap-4">
+<div class="size-14 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-2xl">soup_kitchen</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-1">
+<h3 class="font-bold text-sm">Passata di Pomodoro</h3>
+<span class="text-[10px] text-slate-400">Aperto ieri</span>
+</div>
+<p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+<span class="text-primary font-bold">💡 Tip:</span> Da consumare entro 3 giorni dall'apertura.
+                        </p>
+</div>
+</div>
+<div class="bg-white dark:bg-slate-800 p-3 rounded-xl border border-slate-100 dark:border-slate-700 shadow-sm flex gap-4">
+<div class="size-14 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-2xl">opacity</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-1">
+<h3 class="font-bold text-sm">Succo d'Arancia</h3>
+<span class="text-[10px] text-slate-400">Aperto 4h fa</span>
+</div>
+<p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+<span class="text-primary font-bold">💡 Tip:</span> Da consumare entro 5 giorni per la freschezza.
+                        </p>
+</div>
+</div>
+<div class="bg-white dark:bg-slate-800 p-3 rounded-xl border border-slate-100 dark:border-slate-700 shadow-sm flex gap-4">
+<div class="size-14 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-2xl">bakery_dining</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-1">
+<h3 class="font-bold text-sm">Pancarrè Integrale</h3>
+<span class="text-[10px] text-slate-400">Aperto 3 giorni fa</span>
+</div>
+<p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+<span class="text-primary font-bold">💡 Tip:</span> Chiudi bene il sacchetto per evitare che indurisca.
+                        </p>
+</div>
+</div>
+</div>
+</section>
+<section class="mt-8 px-4">
+<div class="bg-gradient-to-r from-primary to-green-600 rounded-2xl p-6 text-white shadow-lg relative overflow-hidden">
+<div class="relative z-10">
+<h3 class="text-lg font-bold mb-1">Pronto per la spesa?</h3>
+<p class="text-white/80 text-xs mb-4">Hai 12 articoli suggeriti in base ai consumi.</p>
+<button class="bg-white text-primary px-4 py-2 rounded-lg text-xs font-bold flex items-center gap-2">
+                        Genera Lista <span class="material-symbols-outlined text-sm">auto_awesome</span>
+</button>
+</div>
+<span class="material-symbols-outlined absolute -right-4 -bottom-4 text-white/10 text-8xl rotate-12">shopping_basket</span>
+</div>
+</section>
+</main>
+<nav class="fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 px-2 pb-6 pt-2 z-50">
+<div class="flex justify-around items-center max-w-lg mx-auto">
+<a class="flex flex-col items-center gap-1 group" href="#">
+<div class="flex flex-col items-center justify-center p-2 rounded-xl bg-primary text-white transition-all">
+<span class="material-symbols-outlined transition-all" style="font-variation-settings: 'FILL' 1">restaurant</span>
+</div>
+<span class="text-[10px] font-bold text-primary uppercase tracking-wider">Alimentari</span>
+</a>
+<a class="flex flex-col items-center gap-1 group" href="#">
+<div class="flex flex-col items-center justify-center p-2 rounded-xl text-slate-400 group-hover:bg-slate-50 dark:group-hover:bg-slate-800 transition-all">
+<span class="material-symbols-outlined transition-all">home</span>
+</div>
+<span class="text-[10px] font-medium text-slate-400 uppercase tracking-wider">Casa</span>
+</a>
+<a class="flex flex-col items-center gap-1 group" href="#">
+<div class="flex flex-col items-center justify-center p-2 rounded-xl text-slate-400 group-hover:bg-slate-50 dark:group-hover:bg-slate-800 transition-all">
+<span class="material-symbols-outlined transition-all">storefront</span>
+</div>
+<span class="text-[10px] font-medium text-slate-400 uppercase tracking-wider">Negozi</span>
+</a>
+<a class="flex flex-col items-center gap-1 group" href="#">
+<div class="flex flex-col items-center justify-center p-2 rounded-xl text-slate-400 group-hover:bg-slate-50 dark:group-hover:bg-slate-800 transition-all">
+<span class="material-symbols-outlined transition-all">inventory_2</span>
+</div>
+<span class="text-[10px] font-medium text-slate-400 uppercase tracking-wider">Dispensa</span>
+</a>
+</div>
+</nav>
+<div class="fixed bottom-24 right-4 z-40">
+<button class="size-14 rounded-full bg-primary text-white shadow-xl flex items-center justify-center transform active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-3xl">add</span>
+</button>
+</div>
+</body></html>

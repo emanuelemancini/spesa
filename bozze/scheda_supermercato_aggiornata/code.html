@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+
+<html class="light" lang="it"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#4cae4f",
+                        "background-light": "#f6f7f6",
+                        "background-dark": "#151d15",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Manrope', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100">
+<div class="relative flex min-h-screen w-full flex-col max-w-md mx-auto bg-white dark:bg-background-dark shadow-xl">
+<!-- Header -->
+<div class="flex items-center bg-white dark:bg-background-dark p-4 sticky top-0 z-10 border-b border-primary/10">
+<button class="text-slate-900 dark:text-slate-100 flex size-10 shrink-0 items-center justify-center rounded-full hover:bg-primary/10">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<div class="flex flex-1 items-center gap-3 px-2">
+<div class="size-8 rounded-lg bg-primary flex items-center justify-center text-white">
+<span class="material-symbols-outlined">storefront</span>
+</div>
+<h2 class="text-slate-900 dark:text-slate-100 text-lg font-bold leading-tight tracking-tight">Esselunga</h2>
+</div>
+<div class="flex gap-1">
+<button class="flex size-10 items-center justify-center rounded-full hover:bg-primary/10 text-slate-900 dark:text-slate-100">
+<span class="material-symbols-outlined">edit</span>
+</button>
+<button class="flex size-10 items-center justify-center rounded-full hover:bg-red-50 text-red-600">
+<span class="material-symbols-outlined">delete</span>
+</button>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto pb-24">
+<!-- Loyalty Card Section -->
+<div class="p-4">
+<div class="relative overflow-hidden rounded-xl bg-gradient-to-br from-primary to-green-700 p-6 text-white shadow-lg">
+<div class="absolute -right-8 -top-8 size-32 rounded-full bg-white/10"></div>
+<div class="flex justify-between items-start mb-8">
+<div>
+<p class="text-white/80 text-xs font-medium uppercase tracking-widest">Carta Fidaty</p>
+<p class="text-xl font-bold">Esselunga</p>
+</div>
+<span class="material-symbols-outlined text-3xl opacity-80">contactless</span>
+</div>
+<div class="flex items-end justify-between">
+<div>
+<p class="text-white/60 text-[10px] uppercase mb-1">Punti Accumulati</p>
+<p class="text-2xl font-bold tracking-tight">1.250</p><div class="flex items-center gap-1 mt-1 text-[8px] text-white/70 uppercase tracking-tighter">
+<span class="material-symbols-outlined text-[10px]">sync</span>
+<span>Sincronizzato con il sistema Esselunga</span>
+</div>
+</div>
+<button class="flex items-center gap-2 rounded-lg bg-white px-4 py-2 text-sm font-bold text-primary shadow-sm active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-lg">qr_code_2</span>
+                            MOSTRA CODICE
+                        </button>
+</div>
+</div>
+</div>
+<!-- Stats Grid -->
+<div class="grid grid-cols-2 gap-4 px-4 pb-6">
+<div class="flex flex-col gap-1 rounded-xl border border-primary/20 bg-primary/5 p-4">
+<div class="flex items-center gap-2 text-primary">
+<span class="material-symbols-outlined text-xl">shopping_cart</span>
+<p class="text-xs font-semibold uppercase">Da acquistare</p>
+</div>
+<p class="text-3xl font-black text-slate-900 dark:text-white">12</p>
+</div>
+<div class="flex flex-col gap-1 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-4">
+<div class="flex items-center gap-2 text-slate-500">
+<span class="material-symbols-outlined text-xl">check_circle</span>
+<p class="text-xs font-semibold uppercase">Completati</p>
+</div>
+<p class="text-3xl font-black text-slate-900 dark:text-white">154</p>
+</div>
+</div>
+<!-- Primary Action -->
+<!-- Categories / Top Items -->
+<div class="flex flex-col gap-4 px-4">
+<div class="flex items-center justify-between">
+<h3 class="text-lg font-bold text-slate-900 dark:text-white">Categorie Frequenti</h3>
+<button class="text-sm font-semibold text-primary">Vedi tutte</button>
+</div>
+<div class="flex gap-3 overflow-x-auto pb-2 no-scrollbar">
+<div class="flex min-w-[100px] flex-col items-center gap-2 rounded-xl bg-slate-50 dark:bg-slate-800/50 p-4 border border-slate-100 dark:border-slate-800">
+<div class="size-12 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center text-orange-600">
+<span class="material-symbols-outlined">bakery_dining</span>
+</div>
+<span class="text-xs font-bold text-slate-700 dark:text-slate-300">Forno</span>
+</div>
+<div class="flex min-w-[100px] flex-col items-center gap-2 rounded-xl bg-slate-50 dark:bg-slate-800/50 p-4 border border-slate-100 dark:border-slate-800">
+<div class="size-12 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600">
+<span class="material-symbols-outlined">water_drop</span>
+</div>
+<span class="text-xs font-bold text-slate-700 dark:text-slate-300">Bevande</span>
+</div>
+<div class="flex min-w-[100px] flex-col items-center gap-2 rounded-xl bg-slate-50 dark:bg-slate-800/50 p-4 border border-slate-100 dark:border-slate-800">
+<div class="size-12 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center text-red-600">
+<span class="material-symbols-outlined">set_meal</span>
+</div>
+<span class="text-xs font-bold text-slate-700 dark:text-slate-300">Fresco</span>
+</div>
+<div class="flex min-w-[100px] flex-col items-center gap-2 rounded-xl bg-slate-50 dark:bg-slate-800/50 p-4 border border-slate-100 dark:border-slate-800">
+<div class="size-12 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center text-green-600">
+<span class="material-symbols-outlined">nutrition</span>
+</div>
+<span class="text-xs font-bold text-slate-700 dark:text-slate-300">Ortofrutta</span>
+</div>
+</div>
+</div>
+<!-- Recent Activity -->
+<div class="flex flex-col gap-4 px-4 mt-8">
+<h3 class="text-lg font-bold text-slate-900 dark:text-white">Acquisti Recenti</h3>
+<div class="flex flex-col gap-3">
+<div class="flex items-center gap-4 rounded-xl bg-white dark:bg-slate-800/40 p-3 border border-slate-100 dark:border-slate-800">
+<div class="size-12 rounded-lg bg-slate-100 dark:bg-slate-700 flex items-center justify-center">
+<span class="material-symbols-outlined text-slate-500">egg</span>
+</div>
+<div class="flex-1">
+<p class="text-sm font-bold text-slate-900 dark:text-white">Uova Biologiche x6</p>
+<p class="text-xs text-slate-500">2 giorni fa • €2.49</p>
+</div>
+<button class="text-primary hover:bg-primary/10 size-8 flex items-center justify-center rounded-full">
+<span class="material-symbols-outlined">add_shopping_cart</span>
+</button>
+</div>
+<div class="flex items-center gap-4 rounded-xl bg-white dark:bg-slate-800/40 p-3 border border-slate-100 dark:border-slate-800">
+<div class="size-12 rounded-lg bg-slate-100 dark:bg-slate-700 flex items-center justify-center">
+<span class="material-symbols-outlined text-slate-500">coffee</span>
+</div>
+<div class="flex-1">
+<p class="text-sm font-bold text-slate-900 dark:text-white">Caffè 100% Arabica</p>
+<p class="text-xs text-slate-500">5 giorni fa • €5.90</p>
+</div>
+<button class="text-primary hover:bg-primary/10 size-8 flex items-center justify-center rounded-full">
+<span class="material-symbols-outlined">add_shopping_cart</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Navigation Bar -->
+<div class="fixed bottom-0 left-0 right-0 mx-auto max-w-md border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-background-dark px-4 pb-6 pt-2">
+<div class="flex items-center justify-between gap-2">
+<a class="flex flex-1 flex-col items-center gap-1 text-primary" href="#">
+<div class="flex h-8 items-center justify-center">
+<span class="material-symbols-outlined text-[28px]" style="font-variation-settings: 'FILL' 1">storefront</span>
+</div>
+<p class="text-[10px] font-bold uppercase tracking-wider">Negozi</p>
+</a>
+<a class="flex flex-1 flex-col items-center gap-1 text-slate-400 dark:text-slate-500" href="#">
+<div class="flex h-8 items-center justify-center">
+<span class="material-symbols-outlined text-[28px]">format_list_bulleted</span>
+</div>
+<p class="text-[10px] font-bold uppercase tracking-wider">Lista</p>
+</a>
+<a class="flex flex-1 flex-col items-center gap-1 text-slate-400 dark:text-slate-500" href="#">
+<div class="flex h-8 items-center justify-center">
+<span class="material-symbols-outlined text-[28px]">sell</span>
+</div>
+<p class="text-[10px] font-bold uppercase tracking-wider">Offerte</p>
+</a>
+<a class="flex flex-1 flex-col items-center gap-1 text-slate-400 dark:text-slate-500" href="#">
+<div class="flex h-8 items-center justify-center">
+<span class="material-symbols-outlined text-[28px]">person</span>
+</div>
+<p class="text-[10px] font-bold uppercase tracking-wider">Profilo</p>
+</a>
+</div>
+</div>
+</div>
+</body></html>

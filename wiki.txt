@@ -1,0 +1,22 @@
+const LOGO_MAPPING = {
+  'a&o': 'https://aeo.it/assets/images/logo.png',
+  'aldi': 'https://commons.wikimedia.org/wiki/Special:FilePath/ALDI_Nord_Logo_2015.png?width=300',
+  'bennet': 'https://commons.wikimedia.org/wiki/Special:FilePath/Logo_Bennet_new.svg?width=300',
+  'carrefour': 'https://commons.wikimedia.org/wiki/Special:FilePath/Carrefour_logo.svg?width=300',
+  'conad': 'https://it.wikipedia.org/wiki/Special:FilePath/Conad-Logo-1-.svg?width=300',
+  'coop': 'https://commons.wikimedia.org/wiki/Special:FilePath/Coop_Italia_logo.svg?width=300',
+  'crai': 'https://it.wikipedia.org/wiki/Special:FilePath/Logo_CRAI.svg?width=300',
+  'despar': 'https://commons.wikimedia.org/wiki/Special:FilePath/SPAR_logo.svg?width=300',
+  'esselunga': 'https://it.wikipedia.org/wiki/Special:FilePath/Esselunga_logo.svg?width=300',
+  'eurospin': 'https://it.wikipedia.org/wiki/Special:FilePath/Logo_Eurospin.svg?width=300',
+  'famila': 'https://commons.wikimedia.org/wiki/Special:FilePath/Logo_Famila.svg?width=300',
+  'in\'s mercato': 'https://it.wikipedia.org/wiki/Special:FilePath/In%27s_Mercato_logo.svg?width=300',
+  'iper': 'https://commons.wikimedia.org/wiki/Special:FilePath/Iper_La_grande_I_Logo.svg?width=300',
+  'lidl': 'https://commons.wikimedia.org/wiki/Special:FilePath/Lidl-Logo.svg?width=300',
+  'md': 'https://it.wikipedia.org/wiki/Special:FilePath/Logo_MD.svg?width=300',
+  'oasi': 'https://www.supermercatitigre.it/brand/Oasi_Tigre_Logo.png',
+  'pam': 'https://commons.wikimedia.org/wiki/Special:FilePath/Pam_Panorama_logo.svg?width=300',
+  'penny': 'https://commons.wikimedia.org/wiki/Special:FilePath/Penny-Logo.svg?width=300',
+  'tigre': 'https://www.supermercatitigre.it/brand/Oasi_Tigre_Logo.png',
+  'unes': 'https://commons.wikimedia.org/wiki/Special:FilePath/UNES_Supermercati.svg?width=300'
+};

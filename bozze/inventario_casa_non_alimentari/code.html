@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+
+<html lang="it"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#4cae4f",
+                        "background-light": "#f6f7f6",
+                        "background-dark": "#151d15",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<title>Inventario Casa</title>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100">
+<div class="relative flex min-h-screen w-full flex-col max-w-md mx-auto bg-white dark:bg-background-dark shadow-xl overflow-hidden">
+<!-- Header -->
+<header class="flex items-center px-4 py-4 justify-between bg-white dark:bg-background-dark border-b border-primary/10">
+<div class="flex items-center gap-3">
+<div class="bg-primary/10 p-2 rounded-lg">
+<span class="material-symbols-outlined text-primary text-2xl">inventory_2</span>
+</div>
+<h1 class="text-xl font-bold tracking-tight">Inventario Casa</h1>
+</div>
+<button class="flex items-center justify-center rounded-full w-10 h-10 bg-primary/10 text-primary">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</header>
+<!-- Search Section -->
+<div class="px-4 py-4">
+<label class="relative flex items-center w-full">
+<span class="material-symbols-outlined absolute left-4 text-slate-400">search</span>
+<input class="w-full h-12 pl-12 pr-4 bg-primary/5 border-none rounded-xl focus:ring-2 focus:ring-primary text-base" placeholder="Cerca articoli..." type="text"/>
+</label>
+</div>
+<!-- Categories Scroll -->
+<div class="flex gap-3 px-4 pb-4 overflow-x-auto no-scrollbar">
+<button class="flex h-10 shrink-0 items-center justify-center px-5 rounded-full bg-primary text-white text-sm font-semibold">
+                Tutti
+            </button>
+<button class="flex h-10 shrink-0 items-center justify-center px-5 rounded-full bg-primary/10 text-slate-700 dark:text-slate-200 text-sm font-medium hover:bg-primary/20">
+                Detersivi
+            </button>
+<button class="flex h-10 shrink-0 items-center justify-center px-5 rounded-full bg-primary/10 text-slate-700 dark:text-slate-200 text-sm font-medium hover:bg-primary/20">
+                Igiene Persona
+            </button>
+<button class="flex h-10 shrink-0 items-center justify-center px-5 rounded-full bg-primary/10 text-slate-700 dark:text-slate-200 text-sm font-medium hover:bg-primary/20">
+                Accessori
+            </button>
+</div>
+<!-- Section: Low Stock -->
+<div class="px-4 py-2">
+<div class="flex items-center justify-between mb-4">
+<h2 class="text-lg font-bold">Articoli in esaurimento</h2>
+<span class="bg-orange-100 text-orange-700 text-xs font-bold px-2 py-1 rounded-full uppercase">Attenzione</span>
+</div>
+<div class="space-y-3">
+<!-- Item Card 1 -->
+<div class="flex items-center gap-4 p-3 bg-orange-50/50 dark:bg-orange-900/10 border border-orange-100 dark:border-orange-900/30 rounded-xl">
+<div class="w-16 h-16 rounded-lg bg-white dark:bg-slate-800 flex items-center justify-center shrink-0 shadow-sm overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Bottle of liquid laundry detergent" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCCBVxm8gqPw4hAe6p_POO2-vAweQPst-rC_HogpljDEBXDdhYyrNWj5xZW09ttkwezy_yhNIfREQIFus8RAmf5Cqq4LAaDDf6Rquqm6Bay4OAlFYIOi6DCZh3xLNbArvhUVItxkkoSMs7ttILOqgz-RDvJ7e8Ds7omBo3vXlBr6M46GopBEyEwNQK-nPhbFqYpzHnhCV7w6hdpZHNDEVnejHsrsiJIkd02mP27fVsweCT_tvZKM-JhNGqY-lIqAysqWM9wwY3d3gg"/>
+</div>
+<div class="flex-1 min-w-0">
+<p class="font-bold text-slate-900 dark:text-slate-100 truncate">Detersivo Piatti</p>
+<p class="text-sm text-slate-500">Rimasti: 200ml</p>
+</div>
+<div class="text-right">
+<span class="text-xs font-bold text-orange-600 dark:text-orange-400">In esaurimento</span>
+<div class="mt-1 flex gap-1 justify-end">
+<button class="p-1 rounded bg-white border border-slate-200"><span class="material-symbols-outlined text-sm">remove</span></button>
+<button class="p-1 rounded bg-primary text-white"><span class="material-symbols-outlined text-sm">add</span></button>
+</div>
+</div>
+</div>
+<!-- Item Card 2 -->
+<div class="flex items-center gap-4 p-3 bg-orange-50/50 dark:bg-orange-900/10 border border-orange-100 dark:border-orange-900/30 rounded-xl">
+<div class="w-16 h-16 rounded-lg bg-white dark:bg-slate-800 flex items-center justify-center shrink-0 shadow-sm overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Pack of toilet paper rolls" src="https://lh3.googleusercontent.com/aida-public/AB6AXuArj04GbtLBWwxaz1nd6QJEJU-w6MokzrZ_c_68PYAYj5nnB8C9NtbplwpjoHzX4SkpNPAsO1CfYWDsKObqjMIyQErarmyNyuMUXdqSntpgLl7Gr4q8kHlyIaS963BX3WUEsDKd-zNLaRppX4Gyjm61oRVM9KnTWmLZ6o5-nJUqcdeh2WceaHmZFZneR_GT0z0z1QMhM5lwuA2b324Rgahw-gH9i77kgXhZ-Q7_6_fzsbP6DVjGS2O_zN9mVXrOTaLaGfsDC93KQwI"/>
+</div>
+<div class="flex-1 min-w-0">
+<p class="font-bold text-slate-900 dark:text-slate-100 truncate">Carta Igienica</p>
+<p class="text-sm text-slate-500">Rimasti: 2 rotoli</p>
+</div>
+<div class="text-right">
+<span class="text-xs font-bold text-orange-600 dark:text-orange-400">In esaurimento</span>
+<div class="mt-1 flex gap-1 justify-end">
+<button class="p-1 rounded bg-white border border-slate-200"><span class="material-symbols-outlined text-sm">remove</span></button>
+<button class="p-1 rounded bg-primary text-white"><span class="material-symbols-outlined text-sm">add</span></button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Section: Available -->
+<div class="px-4 py-6">
+<h2 class="text-lg font-bold mb-4">Disponibili</h2>
+<div class="grid grid-cols-2 gap-4">
+<!-- Grid Item 1 -->
+<div class="bg-primary/5 dark:bg-white/5 p-3 rounded-xl border border-primary/10">
+<div class="aspect-square rounded-lg bg-white dark:bg-slate-800 mb-3 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Scented candle in glass" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBKSzlqQ6P8XkNrJ4clRqdhmbqUDvrB0j_-kAhKhrHWxclaPhCfUcPRkAqWzdHbZ-fwJSLtlOKegd2-zlwwBtxm9OTlgX6fIRTosK6L5qecoyoetPwpokpZCeYeTFeqX2BJnq3buurXesccvBw8ursEXztFEZQ-sK2sx5VK_b-SaIrGACVD2cssGN0fH2SJvKi1n1bzVYsKkx3NPbjcm-5tV4ZNMJCWxobTWXSOcMOeZ5L5mh0IWM4gCpeLhOMuTBfFwx1aCIfEV2I"/>
+</div>
+<p class="font-bold text-sm truncate">Candele Profumate</p>
+<p class="text-xs text-slate-500 mb-2">Quantità: 5</p>
+<span class="inline-block text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full uppercase">Disponibile</span>
+</div>
+<!-- Grid Item 2 -->
+<div class="bg-primary/5 dark:bg-white/5 p-3 rounded-xl border border-primary/10">
+<div class="aspect-square rounded-lg bg-white dark:bg-slate-800 mb-3 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Modern spray bottle" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCjbDwi5Dp6ncgr-Pvo2cThR_mZBFDoE1CkR67BYDDn90Bqe9BUAwaiQkyy6g-BLzQ1dFIRynptX832vuM5bpKJQQ9gXLmMWF6Qg1X0F7v1gTryOs56ylJLPXG6OoYi255IODG2p62nN_X7OOffF5eHmVvY5GcQxs-hhP0GP2g9RF2UCcQmbhZz71PZWGAT8j3AO0ujN2ZPO63tqxtxC3dvI3qZv2Gx-_-AoySl6pAQPgr-VexDwWzbnCpz53Hro8p032s-yog_Kt8"/>
+</div>
+<p class="font-bold text-sm truncate">Spray Superfici</p>
+<p class="text-xs text-slate-500 mb-2">Quantità: 3</p>
+<span class="inline-block text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full uppercase">Disponibile</span>
+</div>
+</div>
+</div>
+<!-- Floating Action Button -->
+<button class="fixed bottom-24 right-6 w-14 h-14 bg-primary text-white rounded-full shadow-lg flex items-center justify-center hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-3xl">add</span>
+</button>
+<!-- Bottom Navigation -->
+<nav class="mt-auto flex border-t border-primary/10 bg-white dark:bg-background-dark px-4 pb-6 pt-2 sticky bottom-0 w-full">
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined">home</span>
+<p class="text-[10px] font-bold">Home</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1">inventory_2</span>
+<p class="text-[10px] font-bold">Inventario</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined">shopping_cart</span>
+<p class="text-[10px] font-bold">Spesa</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined">settings</span>
+<p class="text-[10px] font-bold">Impostazioni</p>
+</a>
+</nav>
+</div>
+<style>
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</body></html>

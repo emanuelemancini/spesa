@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+
+<html lang="it"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#4cae4f",
+                        "background-light": "#f6f7f6",
+                        "background-dark": "#151d15",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<title>Dettagli Prodotto - Latte Intero</title>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen">
+<div class="relative flex h-auto min-h-screen w-full max-w-md mx-auto flex-col bg-white dark:bg-background-dark overflow-x-hidden shadow-xl">
+<!-- Header -->
+<div class="flex items-center bg-white dark:bg-background-dark p-4 pb-2 justify-between sticky top-0 z-10 border-b border-primary/10">
+<div class="text-slate-900 dark:text-slate-100 flex size-12 shrink-0 items-center justify-start cursor-pointer">
+<span class="material-symbols-outlined">arrow_back</span>
+</div>
+<h2 class="text-slate-900 dark:text-slate-100 text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center">Dettagli Prodotto</h2>
+<div class="flex w-12 items-center justify-end">
+<button class="flex cursor-pointer items-center justify-center rounded-lg h-12 bg-transparent text-slate-900 dark:text-slate-100 p-0">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</div>
+<!-- Product Image -->
+<div class="p-4">
+<div class="w-full bg-center bg-no-repeat bg-cover flex flex-col justify-end overflow-hidden rounded-xl min-h-64 shadow-sm" data-alt="A fresh carton of whole milk on a kitchen counter" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBYXigMg2rBhSxDkfHwBCPy3BA1J-td_q0dBmwdH4ytNyHOBtoDRm-tSRaiB51iZDKsK-EnwcHloYYIrgvrBDm021mp6COhjPfJdNuT9Iubj6gofcLkKvl2wkizbWSkjKdHgNDjTQ6paaz0qWv4BqhCvusrX3CbHESP9kJ1QaRrARISAj6ulmLCty4s5eMLTy44qJNxm8K8yL32uLV8Stn87ytRE6vrhITAxXXi8bYck9oHOdVMjHIgA_5M3SwWTLWexGaH6he2CPE");'>
+</div>
+</div>
+<!-- Product Info -->
+<div class="px-4 pb-6">
+<div class="flex justify-between items-start mb-1">
+<h1 class="text-slate-900 dark:text-slate-100 tracking-tight text-3xl font-extrabold leading-tight">Latte Intero</h1>
+<span class="bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider mt-2">Fresco</span>
+</div>
+<div class="flex items-center gap-2 text-primary font-medium">
+<span class="material-symbols-outlined text-sm">storefront</span>
+<p class="text-sm">Supermercato: Conad</p>
+</div>
+</div>
+<!-- Freshness Section -->
+<div class="mx-4 p-4 rounded-xl bg-primary/5 border border-primary/10 mb-6">
+<div class="flex justify-between items-center mb-3">
+<span class="text-slate-700 dark:text-slate-300 font-semibold text-sm">Stato Freschezza</span>
+<span class="text-primary font-bold text-sm">Ottimo</span>
+</div>
+<div class="w-full bg-slate-200 dark:bg-slate-700 h-3 rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[100%] rounded-full"></div>
+</div>
+<p class="text-slate-500 dark:text-slate-400 text-xs mt-3 flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">info</span>
+                Suggerimento consumo: 3 giorni dall'apertura
+            </p>
+</div>
+<!-- Action Section -->
+<div class="px-4 space-y-4">
+<div class="space-y-2">
+<label class="text-sm font-bold text-slate-700 dark:text-slate-300 ml-1">Data di apertura</label>
+<div class="relative">
+<input class="w-full bg-slate-100 dark:bg-slate-800 border-none rounded-lg p-4 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-primary appearance-none" type="date"/>
+<div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+<span class="material-symbols-outlined">calendar_today</span>
+</div>
+</div>
+</div>
+<button class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 rounded-xl shadow-lg shadow-primary/20 flex items-center justify-center gap-2 transition-colors">
+<span class="material-symbols-outlined">check_circle</span>
+                Segna come aperto
+            </button>
+</div>
+<!-- Additional Info -->
+<div class="p-4 mt-4 space-y-3">
+<div class="flex items-center justify-between p-3 border-b border-slate-100 dark:border-slate-800">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-slate-400">event_note</span>
+<span class="text-sm text-slate-600 dark:text-slate-400">Scadenza Originale</span>
+</div>
+<span class="text-sm font-bold">12 Ott 2023</span>
+</div>
+<div class="flex items-center justify-between p-3 border-b border-slate-100 dark:border-slate-800">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-slate-400">category</span>
+<span class="text-sm text-slate-600 dark:text-slate-400">Categoria</span>
+</div>
+<span class="text-sm font-bold">Latticini</span>
+</div>
+</div>
+<!-- Spacer for Bottom Nav -->
+<div class="h-20"></div>
+<!-- Bottom Navigation Bar -->
+<div class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md flex border-t border-slate-100 dark:border-slate-800 bg-white/90 dark:bg-background-dark/90 backdrop-blur-md px-4 pb-6 pt-3 z-20">
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined">home</span>
+<p class="text-[10px] font-bold uppercase tracking-widest">Home</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1">inventory_2</span>
+<p class="text-[10px] font-bold uppercase tracking-widest">Dispensa</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined">schedule</span>
+<p class="text-[10px] font-bold uppercase tracking-widest">Scadenze</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined">person</span>
+<p class="text-[10px] font-bold uppercase tracking-widest">Profilo</p>
+</a>
+</div>
+</div>
+</body></html>

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+
+<html lang="it"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#4cae4f",
+                        "background-light": "#f6f7f6",
+                        "background-dark": "#151d15",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<title>Inventario Supermercato</title>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen flex flex-col">
+<!-- Header / Top Bar -->
+<header class="sticky top-0 z-10 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-primary/10">
+<div class="flex items-center p-4 justify-between max-w-2xl mx-auto w-full">
+<div class="text-primary flex size-10 shrink-0 items-center justify-center rounded-full hover:bg-primary/10 cursor-pointer">
+<span class="material-symbols-outlined">arrow_back</span>
+</div>
+<h1 class="text-slate-900 dark:text-slate-100 text-lg font-bold leading-tight tracking-tight flex-1 text-center">Supermercato Esselunga</h1>
+<div class="flex size-10 items-center justify-end">
+<button class="text-slate-900 dark:text-slate-100 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">search</span>
+</button>
+</div>
+</div>
+</header>
+<main class="flex-1 max-w-2xl mx-auto w-full pb-24">
+<!-- Summary Card -->
+<div class="p-4">
+<div class="bg-primary/10 rounded-xl p-4 flex items-center justify-between border border-primary/20">
+<div>
+<p class="text-sm font-medium text-primary uppercase tracking-wider">Stato Spesa</p>
+<p class="text-2xl font-extrabold text-slate-900 dark:text-slate-100">12 / 24 <span class="text-base font-normal text-slate-500">articoli</span></p>
+</div>
+<div class="h-12 w-12 rounded-full border-4 border-primary border-t-transparent animate-pulse hidden"></div>
+<div class="flex -space-x-2">
+<div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white text-xs border-2 border-background-light">
+<span class="material-symbols-outlined text-sm">check</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Filters Section -->
+<div class="px-4 pb-2">
+<h3 class="text-slate-900 dark:text-slate-100 text-lg font-bold leading-tight tracking-tight mb-3">Categorie</h3>
+<div class="flex gap-2 overflow-x-auto no-scrollbar pb-2">
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full bg-primary text-white px-5 transition-all">
+<span class="text-sm font-semibold">Tutti</span>
+</button>
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-5 text-slate-600 dark:text-slate-400 hover:border-primary">
+<span class="material-symbols-outlined text-lg">egg</span>
+<span class="text-sm font-medium">Latticini</span>
+</button>
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-5 text-slate-600 dark:text-slate-400 hover:border-primary">
+<span class="material-symbols-outlined text-lg">nutrition</span>
+<span class="text-sm font-medium">Frutta</span>
+</button>
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-5 text-slate-600 dark:text-slate-400 hover:border-primary">
+<span class="material-symbols-outlined text-lg">kitchen</span>
+<span class="text-sm font-medium">Dispensa</span>
+</button>
+</div>
+</div>
+<!-- Inventory List -->
+<div class="px-4 mt-4 space-y-3">
+<!-- Item 1: Bought -->
+<div class="flex items-center gap-4 bg-white dark:bg-slate-800 p-3 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 transition-all hover:shadow-md">
+<div class="text-primary flex items-center justify-center rounded-lg bg-primary/10 shrink-0 size-12">
+<span class="material-symbols-outlined">water_drop</span>
+</div>
+<div class="flex flex-col flex-1 min-w-0">
+<p class="text-slate-900 dark:text-slate-100 text-base font-semibold leading-tight truncate">Latte Intero 1L</p>
+<p class="text-slate-500 dark:text-slate-400 text-xs font-medium uppercase">Latticini</p>
+</div>
+<div class="shrink-0">
+<button class="flex items-center justify-center gap-1 px-3 py-1.5 bg-primary text-white text-xs font-bold rounded-full transition-colors active:scale-95">
+<span class="material-symbols-outlined text-sm">check_circle</span>
+<span>Già comprato</span>
+</button>
+</div>
+</div>
+<!-- Item 2: To Buy -->
+<div class="flex items-center gap-4 bg-white dark:bg-slate-800 p-3 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 transition-all hover:shadow-md">
+<div class="text-slate-400 dark:text-slate-500 flex items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-700 shrink-0 size-12">
+<span class="material-symbols-outlined">breakfast_dining</span>
+</div>
+<div class="flex flex-col flex-1 min-w-0">
+<p class="text-slate-900 dark:text-slate-100 text-base font-semibold leading-tight truncate">Pane Integrale</p>
+<p class="text-slate-500 dark:text-slate-400 text-xs font-medium uppercase">Forneria</p>
+</div>
+<div class="shrink-0">
+<button class="flex items-center justify-center gap-1 px-3 py-1.5 border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 text-xs font-bold rounded-full hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors active:scale-95">
+<span class="material-symbols-outlined text-sm">shopping_cart</span>
+<span>Da ricomprare</span>
+</button>
+</div>
+</div>
+<!-- Item 3: Bought -->
+<div class="flex items-center gap-4 bg-white dark:bg-slate-800 p-3 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 transition-all hover:shadow-md">
+<div class="text-primary flex items-center justify-center rounded-lg bg-primary/10 shrink-0 size-12">
+<span class="material-symbols-outlined">eco</span>
+</div>
+<div class="flex flex-col flex-1 min-w-0">
+<p class="text-slate-900 dark:text-slate-100 text-base font-semibold leading-tight truncate">Mele Golden (kg)</p>
+<p class="text-slate-500 dark:text-slate-400 text-xs font-medium uppercase">Frutta</p>
+</div>
+<div class="shrink-0">
+<button class="flex items-center justify-center gap-1 px-3 py-1.5 bg-primary text-white text-xs font-bold rounded-full transition-colors">
+<span class="material-symbols-outlined text-sm">check_circle</span>
+<span>Già comprato</span>
+</button>
+</div>
+</div>
+<!-- Item 4: To Buy -->
+<div class="flex items-center gap-4 bg-white dark:bg-slate-800 p-3 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 transition-all hover:shadow-md">
+<div class="text-slate-400 dark:text-slate-500 flex items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-700 shrink-0 size-12">
+<span class="material-symbols-outlined">liquor</span>
+</div>
+<div class="flex flex-col flex-1 min-w-0">
+<p class="text-slate-900 dark:text-slate-100 text-base font-semibold leading-tight truncate">Vino Rosso Chianti</p>
+<p class="text-slate-500 dark:text-slate-400 text-xs font-medium uppercase">Bevande</p>
+</div>
+<div class="shrink-0">
+<button class="flex items-center justify-center gap-1 px-3 py-1.5 border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 text-xs font-bold rounded-full hover:bg-slate-50 transition-colors">
+<span class="material-symbols-outlined text-sm">shopping_cart</span>
+<span>Da ricomprare</span>
+</button>
+</div>
+</div>
+<!-- Item 5: To Buy -->
+<div class="flex items-center gap-4 bg-white dark:bg-slate-800 p-3 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 transition-all hover:shadow-md">
+<div class="text-slate-400 dark:text-slate-500 flex items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-700 shrink-0 size-12">
+<span class="material-symbols-outlined">clean_hands</span>
+</div>
+<div class="flex flex-col flex-1 min-w-0">
+<p class="text-slate-900 dark:text-slate-100 text-base font-semibold leading-tight truncate">Detersivo Piatti</p>
+<p class="text-slate-500 dark:text-slate-400 text-xs font-medium uppercase">Igiene Casa</p>
+</div>
+<div class="shrink-0">
+<button class="flex items-center justify-center gap-1 px-3 py-1.5 border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 text-xs font-bold rounded-full hover:bg-slate-50 transition-colors">
+<span class="material-symbols-outlined text-sm">shopping_cart</span>
+<span>Da ricomprare</span>
+</button>
+</div>
+</div>
+</div>
+<!-- FAB Add Item -->
+<button class="fixed bottom-24 right-6 size-14 bg-primary text-white rounded-full shadow-lg flex items-center justify-center hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-3xl">add</span>
+</button>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 pb-safe">
+<div class="flex max-w-2xl mx-auto h-16 items-center">
+<a class="flex flex-1 flex-col items-center justify-center gap-0.5 text-slate-400 hover:text-primary" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="text-[10px] font-semibold uppercase tracking-wider">Home</span>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-0.5 text-primary" href="#">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="text-[10px] font-semibold uppercase tracking-wider">Inventario</span>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-0.5 text-slate-400 hover:text-primary" href="#">
+<span class="material-symbols-outlined">format_list_bulleted</span>
+<span class="text-[10px] font-semibold uppercase tracking-wider">Liste</span>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-0.5 text-slate-400 hover:text-primary" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="text-[10px] font-semibold uppercase tracking-wider">Profilo</span>
+</a>
+</div>
+</nav>
+<style>
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .pb-safe {
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+    </style>
+</body></html>

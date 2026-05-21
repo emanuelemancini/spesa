@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+
+<html lang="it"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                "primary": "#4cae4f",
+                "background-light": "#f6f7f6",
+                "background-dark": "#151d15",
+              },
+              fontFamily: {
+                "display": ["Manrope"]
+              },
+              borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+            },
+          },
+        }
+    </script>
+<style>
+        .camera-overlay {
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(2px);
+        }
+        .scan-region {
+            box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.6);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display antialiased">
+<div class="relative flex h-screen w-full flex-col overflow-hidden">
+<!-- Top App Bar -->
+<div class="z-20 flex items-center bg-white dark:bg-background-dark p-4 justify-between border-b border-primary/10">
+<button class="text-slate-900 dark:text-slate-100 flex size-10 shrink-0 items-center justify-center rounded-full hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h2 class="text-slate-900 dark:text-slate-100 text-lg font-bold leading-tight tracking-tight flex-1 text-center">
+                Scansiona Carta Fedeltà
+            </h2>
+<div class="size-10"></div> <!-- Spacer for centering -->
+</div>
+<!-- Camera View / Viewport Area -->
+<div class="relative flex-1 bg-slate-900 overflow-hidden flex items-center justify-center">
+<!-- Simulated Camera Feed Background -->
+<div class="absolute inset-0 z-0">
+<div class="w-full h-full bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center">
+<img alt="Blurred background of a retail store checkout area" class="w-full h-full object-cover opacity-40 blur-sm" data-alt="Blurred background of a retail store checkout area" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAibR5wp_MZ-7lmqP0gd3k2aEeI-FRnzk8Kvmxfd-w4-TMPLL4ikPu8R4HYcDxPBrZ-D1gNFkge_rDBfuOwypAWGMExpxEerIT7cEnO3iANVxtWOM_vmsetnXjgDFjPkRI7Xs5uK19iz8htQMdUs3tmSUjxMHv2vlPwV2cswyjXSNx0YKED-nGMJzwfQvRT002NBsEDwyJjuxVYRCasIF48u1HpVkj1WQwUGrFyffAckJ09mKfyZETu9cEmmGEXwbU4sZYwsn21YqU"/>
+</div>
+</div>
+<!-- Scanning Frame Overlay -->
+<div class="relative z-10 w-full max-w-md px-8 flex flex-col items-center">
+<div class="relative w-full aspect-[1.6/1] rounded-xl scan-region border-2 border-primary shadow-2xl overflow-hidden">
+<!-- Corner Accents -->
+<div class="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-primary rounded-tl-lg"></div>
+<div class="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-primary rounded-tr-lg"></div>
+<div class="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-primary rounded-bl-lg"></div>
+<div class="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-primary rounded-br-lg"></div>
+<!-- Scanning Line Animation Placeholder -->
+<div class="absolute top-1/2 left-0 w-full h-0.5 bg-primary shadow-[0_0_15px_rgba(76,174,79,0.8)]"></div>
+</div>
+<div class="mt-8 text-center text-white space-y-2">
+<p class="text-lg font-bold tracking-tight">Inquadra il codice a barre</p>
+<p class="text-sm font-normal opacity-80 max-w-[280px] mx-auto">
+                        Posiziona la carta fedeltà all'interno della cornice per scansionarla automaticamente
+                    </p>
+</div>
+</div>
+<!-- Camera Controls -->
+<div class="absolute bottom-8 left-0 right-0 z-20 flex items-center justify-center gap-8">
+<button class="flex shrink-0 items-center justify-center rounded-full size-12 bg-white/10 backdrop-blur-md text-white border border-white/20 hover:bg-white/20 transition-all">
+<span class="material-symbols-outlined">image</span>
+</button>
+<button class="flex shrink-0 items-center justify-center rounded-full size-20 bg-primary text-white shadow-lg shadow-primary/30 hover:scale-105 active:scale-95 transition-all">
+<span class="material-symbols-outlined !text-4xl">photo_camera</span>
+</button>
+<button class="flex shrink-0 items-center justify-center rounded-full size-12 bg-white/10 backdrop-blur-md text-white border border-white/20 hover:bg-white/20 transition-all">
+<span class="material-symbols-outlined">flash_on</span>
+</button>
+</div>
+</div>
+<!-- Bottom Actions -->
+<div class="z-20 bg-white dark:bg-background-dark p-6 pb-10 flex flex-col gap-3 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
+<button class="flex w-full items-center justify-center rounded-xl h-14 px-6 bg-primary text-white text-base font-bold tracking-wide shadow-md hover:opacity-90 active:scale-[0.98] transition-all">
+<span class="material-symbols-outlined mr-2">edit</span>
+                Inserisci manualmente
+            </button>
+<button class="flex w-full items-center justify-center rounded-xl h-14 px-6 bg-primary/10 text-primary text-base font-bold tracking-wide hover:bg-primary/20 active:scale-[0.98] transition-all">
+                Annulla
+            </button>
+</div>
+</div>
+</body></html>
