@@ -17,7 +17,7 @@ const useStore = create(
       toast: null, // { message, type, id }
       config: {
         kitchenCategories: ['Fresco', 'Dispensa', 'Surgelati', 'Bevande', 'Altro'],
-        homeCategories: ['Detersivi', 'Igiene', 'Accessori', 'Dispensa'],
+        homeCategories: ['Igiene', 'Detersivi', 'Accessori', 'Dispensa'],
         dataCleared: false,
         notifications: {
           pushEnabled: true,
@@ -193,19 +193,17 @@ const useStore = create(
     }),
     {
       name: 'spesa-storage',
-      version: 11,
+      version: 12,
       migrate: (persisted, version) => {
-        // Rinomina "Igiene Persona" → "Igiene" — applicato a tutte le versioni precedenti
-        const fixIgiene = (data) => {
-          const products = (data.products || []).map(p =>
-            p.category === 'Igiene Persona' ? { ...p, category: 'Igiene' } : p
-          );
-          const homeCats = (data.config?.homeCategories || []).map(c =>
-            c === 'Igiene Persona' ? 'Igiene' : c
-          );
-          return { ...data, products, config: { ...data.config, homeCategories: homeCats } };
-        };
-        return fixIgiene(persisted);
+        const products = (persisted.products || []).map(p =>
+          p.category === 'Igiene Persona' ? { ...p, category: 'Igiene' } : p
+        );
+        const homeCats = (persisted.config?.homeCategories || [])
+          .map(c => c === 'Igiene Persona' ? 'Igiene' : c);
+        // Forza ordine corretto
+        const ordered = ['Igiene', 'Detersivi', 'Accessori', 'Dispensa'];
+        const merged = [...ordered, ...homeCats.filter(c => !ordered.includes(c))];
+        return { ...persisted, products, config: { ...persisted.config, homeCategories: merged } };
       },
       partialize: (state) => ({
         supermarkets: state.supermarkets,
