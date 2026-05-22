@@ -236,11 +236,19 @@ const Dashboard = () => {
                             <p className="font-black text-slate-900 text-sm tracking-tight truncate">{product.name}</p>
                             <span className={`size-2 rounded-full animate-ping shrink-0 ${isToday ? 'bg-red-500' : 'bg-orange-400'}`}></span>
                           </div>
-                          {isToday ? (
-                            <span className="text-[9px] font-black bg-red-500 text-white px-2 py-0.5 rounded-md uppercase tracking-widest shrink-0">Critico</span>
-                          ) : (
-                            <span className="text-[9px] font-black bg-orange-400 text-white px-2 py-0.5 rounded-md uppercase tracking-widest shrink-0">A breve</span>
-                          )}
+                          <div className="flex flex-col items-end gap-1 shrink-0">
+                            {isToday ? (
+                              <span className="text-[9px] font-black bg-red-500 text-white px-2 py-0.5 rounded-md uppercase tracking-widest">Critico</span>
+                            ) : (
+                              <span className="text-[9px] font-black bg-orange-400 text-white px-2 py-0.5 rounded-md uppercase tracking-widest">A breve</span>
+                            )}
+                            <button
+                              onClick={(e) => handleConsumed(e, product)}
+                              className="text-[9px] font-black text-slate-400 border border-slate-200 px-2 py-0.5 rounded-md uppercase tracking-widest active:scale-95 active:bg-slate-50 transition-all"
+                            >
+                              Consumato
+                            </button>
+                          </div>
                         </div>
                         <div className="flex flex-col gap-1">
                           <div className="flex items-center gap-1 text-slate-400 mt-1.5">
@@ -271,16 +279,6 @@ const Dashboard = () => {
                           })()}
                         </div>
                       </div>
-                    </div>
-                    {/* Pulsante Consumato */}
-                    <div className="mt-3 flex" onClick={e => e.stopPropagation()}>
-                      <button
-                        onClick={(e) => handleConsumed(e, product)}
-                        className="flex-1 h-9 rounded-xl bg-slate-50 border border-slate-200 text-slate-500 text-[11px] font-black uppercase tracking-widest flex items-center justify-center gap-1.5 active:scale-95 active:bg-slate-100 transition-all"
-                      >
-                        <span className="material-symbols-outlined !text-base">check</span>
-                        Ho consumato questo prodotto
-                      </button>
                     </div>
                   </div>
                 );
