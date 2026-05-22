@@ -511,22 +511,26 @@ const Dashboard = () => {
                 Vedi tutti
               </button>
             </div>
-            <div className="grid grid-cols-2 gap-4">
-              {supermarkets.map(store => (
-                <div 
-                  key={store.id} 
-                  onClick={() => navigate(`/stores/${store.id}`)}
-                  className="p-4 bg-white rounded-3xl border border-slate-100 shadow-sm flex flex-col items-center gap-3 cursor-pointer active:scale-95 transition-all"
-                >
-                  <div className="size-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
-                    <span className="material-symbols-outlined !text-2xl">storefront</span>
+            <div className="flex flex-col gap-3">
+              {supermarkets.map(store => {
+                const count = products.filter(p => (p.supermarketIds?.[0] === store.id || p.supermarketId === store.id) && p.status === 'to-buy').length;
+                return (
+                  <div
+                    key={store.id}
+                    onClick={() => navigate(`/stores/${store.id}`)}
+                    className="w-full px-4 py-3 bg-white rounded-2xl border border-slate-100 shadow-sm flex items-center gap-3 cursor-pointer active:scale-[0.98] transition-all"
+                  >
+                    <div className="size-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
+                      <span className="material-symbols-outlined !text-xl">storefront</span>
+                    </div>
+                    <p className="flex-1 font-black text-slate-900 text-sm tracking-tight truncate">{store.name}</p>
+                    <span className="text-[10px] font-black text-slate-500 bg-slate-100 px-3 py-1 rounded-full whitespace-nowrap">
+                      {count} {count === 1 ? 'articolo' : 'articoli'}
+                    </span>
+                    <span className="material-symbols-outlined !text-base text-slate-300">chevron_right</span>
                   </div>
-                  <p className="text-base font-black text-slate-900 truncate w-full text-center">{store.name}</p>
-                  <span className="text-xs font-black text-slate-600 bg-slate-100 px-4 py-2 rounded-full whitespace-nowrap">
-                    {products.filter(p => (p.supermarketIds?.[0] === store.id || p.supermarketId === store.id) && p.status === 'to-buy').length} articoli
-                  </span>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </section>
         </>
