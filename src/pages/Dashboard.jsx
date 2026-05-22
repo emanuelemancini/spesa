@@ -230,59 +230,58 @@ const Dashboard = () => {
                     })}
                     className={`group relative bg-white p-4 rounded-[28px] border border-slate-100 shadow-sm cursor-pointer active:scale-[0.98] transition-all border-l-[6px] ${isToday ? 'border-l-red-500' : 'border-l-orange-400'}`}
                   >
-                    <div className="flex items-stretch gap-4">
+                    <div className="flex gap-4">
+                      {/* Immagine */}
                       <ProductImage
                         product={product}
                         className="size-16 rounded-2xl shrink-0 border border-slate-50/50 self-center"
                       />
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-start justify-between gap-2 mb-0.5">
-                          <div className="flex items-center gap-2 min-w-0">
-                            <p className="font-black text-slate-900 text-sm tracking-tight truncate">{product.name}</p>
-                            <span className={`size-2 rounded-full animate-ping shrink-0 ${isToday ? 'bg-red-500' : 'bg-orange-400'}`}></span>
-                          </div>
-                          <div className="flex flex-col items-end justify-between gap-6 shrink-0">
-                            {isToday ? (
-                              <span className="text-[9px] font-black bg-red-500 text-white px-2 py-0.5 rounded-md uppercase tracking-widest">Critico</span>
-                            ) : (
-                              <span className="text-[9px] font-black bg-orange-400 text-white px-2 py-0.5 rounded-md uppercase tracking-widest">A breve</span>
-                            )}
-                            <button
-                              onClick={(e) => handleConsumed(e, product)}
-                              className="text-[9px] font-black text-sky-600 bg-sky-100 px-2 py-0.5 rounded-md uppercase tracking-widest active:scale-95 active:bg-sky-200 transition-all"
-                            >
-                              Consumato
+                      {/* Testo */}
+                      <div className="flex-1 min-w-0 flex flex-col justify-center gap-1">
+                        <div className="flex items-center gap-2">
+                          <p className="font-black text-slate-900 text-sm tracking-tight truncate">{product.name}</p>
+                          <span className={`size-2 rounded-full animate-ping shrink-0 ${isToday ? 'bg-red-500' : 'bg-orange-400'}`}></span>
+                        </div>
+                        <div className="flex items-center gap-1 text-slate-400">
+                          <span className="material-symbols-outlined !text-[12px]">schedule</span>
+                          <p className="text-[10px] font-black tracking-tight">
+                            {isToday ? 'Scade oggi' : (() => {
+                              const d = new Date(product.expiryDate);
+                              const day = d.getDate();
+                              const article = (day === 1 || day === 8 || day === 11) ? "l'" : 'il ';
+                              return `Scade ${article}${format(d, 'd MMMM', { locale: it })}`;
+                            })()}
+                          </p>
+                        </div>
+                        {(() => {
+                          const store = supermarkets.find(s => s.id === product.supermarketId);
+                          return store ? (
+                            <button onClick={(e) => { e.stopPropagation(); navigate(`/stores/${store.id}?highlight=${product.id}`); }} className="flex items-center gap-1 text-primary/60 hover:text-primary active:scale-95 transition-all w-fit">
+                              <span className="material-symbols-outlined !text-[12px]">storefront</span>
+                              <p className="text-[10px] font-black uppercase tracking-tighter truncate max-w-[80px]">{store.name}</p>
+                              <span className="material-symbols-outlined !text-[10px]">arrow_forward</span>
                             </button>
-                          </div>
-                        </div>
-                        <div className="flex flex-col gap-1">
-                          <div className="flex items-center gap-1 text-slate-400 mt-1.5">
-                            <span className="material-symbols-outlined !text-[12px]">schedule</span>
-                            <p className="text-[10px] font-black tracking-tight">
-                              {isToday ? 'Scade oggi' : (() => {
-                                const d = new Date(product.expiryDate);
-                                const day = d.getDate();
-                                const article = (day === 1 || day === 8 || day === 11) ? "l'" : 'il ';
-                                return `Scade ${article}${format(d, 'd MMMM', { locale: it })}`;
-                              })()}
-                            </p>
-                          </div>
-                          {(() => {
-                            const store = supermarkets.find(s => s.id === product.supermarketId);
-                            return store ? (
-                              <button onClick={(e) => { e.stopPropagation(); navigate(`/stores/${store.id}?highlight=${product.id}`); }} className="flex items-center gap-1 text-primary/60 hover:text-primary active:scale-95 transition-all">
-                                <span className="material-symbols-outlined !text-[12px]">storefront</span>
-                                <p className="text-[10px] font-black uppercase tracking-tighter truncate max-w-[80px]">{store.name}</p>
-                                <span className="material-symbols-outlined !text-[10px]">arrow_forward</span>
-                              </button>
-                            ) : (
-                              <div className="flex items-center gap-1 text-slate-400">
-                                <span className="material-symbols-outlined !text-[12px]">storefront</span>
-                                <p className="text-[10px] font-black uppercase tracking-tighter">N/D</p>
-                              </div>
-                            );
-                          })()}
-                        </div>
+                          ) : (
+                            <div className="flex items-center gap-1 text-slate-400">
+                              <span className="material-symbols-outlined !text-[12px]">storefront</span>
+                              <p className="text-[10px] font-black uppercase tracking-tighter">N/D</p>
+                            </div>
+                          );
+                        })()}
+                      </div>
+                      {/* Badge colonna destra */}
+                      <div className="flex flex-col items-end justify-between shrink-0">
+                        {isToday ? (
+                          <span className="text-[9px] font-black bg-red-500 text-white px-2 py-0.5 rounded-md uppercase tracking-widest">Critico</span>
+                        ) : (
+                          <span className="text-[9px] font-black bg-orange-400 text-white px-2 py-0.5 rounded-md uppercase tracking-widest">A breve</span>
+                        )}
+                        <button
+                          onClick={(e) => handleConsumed(e, product)}
+                          className="text-[9px] font-black text-sky-600 bg-sky-100 px-2 py-0.5 rounded-md uppercase tracking-widest active:scale-95 active:bg-sky-200 transition-all"
+                        >
+                          Consumato
+                        </button>
                       </div>
                     </div>
                   </div>
