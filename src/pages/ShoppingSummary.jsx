@@ -111,12 +111,6 @@ const ShoppingSummary = () => {
             <span className="text-lg font-black text-slate-900 leading-none">{productsToBuy.length}</span>
             <span className="text-[9px] font-black text-slate-400 tracking-tighter uppercase">Articoli</span>
           </div>
-          <button
-            onClick={() => setIsAddModalOpen(true)}
-            className="size-10 rounded-full bg-primary text-white flex items-center justify-center shadow-lg shadow-primary/30 active:scale-90 transition-transform"
-          >
-            <span className="material-symbols-outlined !text-xl">add</span>
-          </button>
         </div>
       </div>
 
