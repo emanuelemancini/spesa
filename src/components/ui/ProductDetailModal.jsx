@@ -69,6 +69,7 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
   if (!isOpen || !product) return null;
 
   const handleOpen = () => openProduct(product.id, product.suggestedConsumptionDays || 3);
+  const handleUndoOpen = () => updateProduct(product.id, { status: 'bought', openedDate: null });
   const handleFinish = () => {
     updateProduct(product.id, { quantity: 0, openedDate: null, expiryDate: null });
     onClose();
@@ -636,7 +637,7 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
               <div className="space-y-3 mb-8">
                 {/* Top Row: 3 Buttons */}
                 <div className="grid grid-cols-3 gap-3">
-                  <button onClick={handleOpen} disabled={isOpened} className={`flex flex-col items-center justify-center p-3 rounded-3xl border-2 transition-all ${isOpened ? 'bg-emerald-50 border-emerald-100 text-emerald-600' : 'bg-white border-slate-100 text-slate-400 active:bg-slate-50 active:scale-95'}`}>
+                  <button onClick={isOpened ? handleUndoOpen : handleOpen} className={`flex flex-col items-center justify-center p-3 rounded-3xl border-2 transition-all ${isOpened ? 'bg-emerald-50 border-emerald-100 text-emerald-600 active:bg-red-50 active:border-red-100 active:text-red-500 active:scale-95' : 'bg-white border-slate-100 text-slate-400 active:bg-slate-50 active:scale-95'}`}>
                     <div className={`size-9 rounded-2xl flex items-center justify-center mb-1.5 ${isOpened ? 'bg-emerald-500 text-white shadow-sm' : 'bg-slate-100'}`}>
                       <span className="material-symbols-outlined !text-lg">{isOpened ? 'restaurant' : 'shopping_bag'}</span>
                     </div>
