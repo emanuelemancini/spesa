@@ -104,7 +104,6 @@ const ShoppingSummary = () => {
           </button>
           <div>
             <h1 className="text-xl font-black text-[#2d5a27] tracking-tight">Lista della Spesa</h1>
-            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none">Generata automaticamente</p>
           </div>
         </div>
         <div className="flex items-center gap-3">
@@ -112,7 +111,6 @@ const ShoppingSummary = () => {
             <span className="text-lg font-black text-slate-900 leading-none">{productsToBuy.length}</span>
             <span className="text-[9px] font-black text-slate-400 tracking-tighter uppercase">Articoli</span>
           </div>
-          <ReorderButton isReordering={isReordering} onToggle={() => setIsReordering(r => !r)} />
           <button
             onClick={() => setIsAddModalOpen(true)}
             className="size-10 rounded-full bg-primary text-white flex items-center justify-center shadow-lg shadow-primary/30 active:scale-90 transition-transform"
