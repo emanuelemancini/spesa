@@ -198,6 +198,38 @@ function App() {
     return () => clearInterval(interval);
   }, []);
 
+  // Backup automatico ogni 4 ore
+  React.useEffect(() => {
+    const AUTO_BACKUP_INTERVAL = 4 * 60 * 60 * 1000; // 4 ore in ms
+    const AUTO_BACKUP_KEY = 'spesa-last-auto-backup';
+
+    const runAutoBackup = async () => {
+      const s = useStore.getState();
+      await syncModule.createManualBackup({
+        products: s.products,
+        supermarkets: s.supermarkets,
+        user: s.user,
+        config: s.config,
+        readNotificationIds: s.readNotificationIds,
+      });
+      localStorage.setItem(AUTO_BACKUP_KEY, Date.now().toString());
+    };
+
+    // Controlla se è già passato abbastanza tempo dall'ultimo backup automatico
+    const lastBackup = parseInt(localStorage.getItem(AUTO_BACKUP_KEY) || '0', 10);
+    const now = Date.now();
+    const timeUntilNext = Math.max(0, AUTO_BACKUP_INTERVAL - (now - lastBackup));
+
+    // Esegui al momento giusto, poi ogni 4 ore
+    const timeout = setTimeout(() => {
+      runAutoBackup();
+      const interval = setInterval(runAutoBackup, AUTO_BACKUP_INTERVAL);
+      return () => clearInterval(interval);
+    }, timeUntilNext);
+
+    return () => clearTimeout(timeout);
+  }, []);
+
   const [isAddModalOpen, React_useState] = React.useState(false);
 
   if (!isAuthenticated) {
