@@ -514,7 +514,7 @@ const Dashboard = () => {
             </div>
             <div className="flex flex-col gap-3">
               {supermarkets.map(store => {
-                const count = products.filter(p => (p.supermarketIds?.[0] === store.id || p.supermarketId === store.id) && p.status === 'to-buy').length;
+                const count = products.filter(p => p.supermarketIds?.[0] === store.id || p.supermarketId === store.id).length;
                 return (
                   <div
                     key={store.id}
