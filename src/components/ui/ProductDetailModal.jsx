@@ -70,7 +70,7 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
 
   const handleOpen = () => openProduct(product.id, product.suggestedConsumptionDays || 3);
   const handleFinish = () => {
-    updateProduct(product.id, { status: 'to-buy', openedDate: null, quantity: 0 });
+    updateProduct(product.id, { status: 'to-buy', openedDate: null, quantity: 0, expiryDate: null });
     onClose();
   };
   const handleSave = () => {
