@@ -163,36 +163,14 @@ const SettingsPage = () => {
     const [updateStatus, setUpdateStatus] = useState('idle'); // idle | checking | available | updated | latest
 
     const handleCheckUpdate = async () => {
-        if (!('serviceWorker' in navigator)) { setUpdateStatus('latest'); return; }
+        if (!('serviceWorker' in navigator)) { setUpdateStatus('checking'); setTimeout(() => { window.location.reload(); }, 500); return; }
         setUpdateStatus('checking');
         try {
             const reg = await navigator.serviceWorker.getRegistration();
-            if (!reg) { setUpdateStatus('latest'); return; }
-            await reg.update();
-            // Aspetta un attimo per vedere se c'è un SW in attesa
-            setTimeout(() => {
-                const sw = reg.installing || reg.waiting;
-                if (sw) {
-                    setUpdateStatus('available');
-                } else {
-                    setUpdateStatus('latest');
-                    setTimeout(() => setUpdateStatus('idle'), 3000);
-                }
-            }, 1500);
-        } catch {
-            setUpdateStatus('idle');
-        }
-    };
-
-    const handleApplyUpdate = async () => {
-        const reg = await navigator.serviceWorker.getRegistration();
-        const sw = reg?.waiting || reg?.installing;
-        if (sw) {
-            sw.postMessage({ type: 'SKIP_WAITING' });
-            navigator.serviceWorker.addEventListener('controllerchange', () => window.location.reload());
-        } else {
-            window.location.reload();
-        }
+            if (reg) await reg.update();
+        } catch {}
+        // Con skipWaiting il nuovo SW è già attivo — basta ricaricare
+        setTimeout(() => { window.location.reload(); }, 800);
     };
 
     const handleRemoveCat = (type, cat) => {
@@ -613,31 +591,26 @@ const SettingsPage = () => {
             {/* Aggiornamento App */}
             <section className="px-4 mb-4">
                 <button
-                    onClick={updateStatus === 'available' ? handleApplyUpdate : handleCheckUpdate}
+                    onClick={handleCheckUpdate}
                     disabled={updateStatus === 'checking'}
                     className="w-full flex items-center gap-4 p-4 bg-white rounded-[28px] border border-slate-100 shadow-sm hover:bg-slate-50 active:bg-slate-100 transition-colors group disabled:opacity-60"
                 >
-                    <div className={`size-12 rounded-2xl flex items-center justify-center group-hover:scale-105 transition-transform ${updateStatus === 'available' ? 'bg-primary/10 text-primary' : updateStatus === 'latest' ? 'bg-green-50 text-green-500' : 'bg-slate-50 text-slate-400'}`}>
+                    <div className="size-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center group-hover:scale-105 transition-transform">
                         <span className={`material-symbols-rounded ${updateStatus === 'checking' ? 'animate-spin' : ''}`}>
-                            {updateStatus === 'available' ? 'system_update' : updateStatus === 'latest' ? 'check_circle' : 'update'}
+                            {updateStatus === 'checking' ? 'sync' : 'system_update'}
                         </span>
                     </div>
                     <div className="text-left">
                         <p className="text-sm font-black text-slate-900">
-                            {updateStatus === 'available' ? 'Aggiornamento disponibile!' :
-                             updateStatus === 'checking' ? 'Controllo in corso...' :
-                             updateStatus === 'latest' ? 'App aggiornata' :
-                             'Controlla aggiornamenti'}
+                            {updateStatus === 'checking' ? 'Aggiornamento in corso...' : 'Aggiorna app'}
                         </p>
                         <p className="text-[11px] font-bold text-slate-400 mt-0.5">
-                            {updateStatus === 'available' ? 'Tocca per applicare e ricaricare' :
-                             updateStatus === 'latest' ? 'Stai usando la versione più recente' :
-                             'Verifica se è disponibile una nuova versione'}
+                            {updateStatus === 'checking' ? 'L\'app si ricaricherà tra un momento' : 'Scarica e applica l\'ultima versione'}
                         </p>
                     </div>
                     {updateStatus !== 'checking' && (
                         <div className="ml-auto size-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-400">
-                            <span className="material-symbols-rounded !text-[20px]">{updateStatus === 'available' ? 'download' : 'chevron_right'}</span>
+                            <span className="material-symbols-rounded !text-[20px]">chevron_right</span>
                         </div>
                     )}
                 </button>
