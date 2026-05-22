@@ -84,7 +84,8 @@ function ProductRow({ product, onOpen, onToggleBought, dragHandleProps, isReorde
     <div
       id={`product-${product.id}`}
       onClick={() => !isReordering && onOpen(product)}
-      className={`flex items-center gap-3 rounded-[22px] bg-white p-3 border border-l-4 ${borderColor} shadow-sm transition-all ${isReordering ? '' : 'active:scale-[0.98] cursor-pointer'} ${isGlowing ? 'border-primary/40 shadow-[0_0_0_3px_rgba(45,90,39,0.15),0_0_20px_rgba(45,90,39,0.15)] animate-pulse' : 'border-slate-100'}`}
+      style={isGlowing ? { backgroundColor: 'rgb(220,242,217)', transition: 'background-color 0.3s ease' } : { backgroundColor: 'white', transition: 'background-color 1.5s ease' }}
+      className={`flex items-center gap-3 rounded-[22px] p-3 border border-l-4 ${borderColor} ${isGlowing ? 'border-primary/50 shadow-md shadow-primary/20' : 'border-slate-100 shadow-sm'} transition-[border,box-shadow] ${isReordering ? '' : 'active:scale-[0.98] cursor-pointer'}`}
     >
       <DragHandle dragHandleProps={dragHandleProps} />
       <ProductImage product={product} className="size-14 rounded-2xl shrink-0" />
@@ -248,17 +249,19 @@ const SupermarketDetail = () => {
     }
   }, [supermarket]);
 
-  // Scroll + glow sul prodotto evidenziato
+  // Scroll dall'inizio + highlight sul prodotto evidenziato
   React.useEffect(() => {
     if (!highlightId) return;
-    const el = document.getElementById(`product-${highlightId}`);
-    if (el) {
-      setTimeout(() => {
+    // Prima vai in cima istantaneamente
+    window.scrollTo({ top: 0, behavior: 'instant' });
+    setTimeout(() => {
+      const el = document.getElementById(`product-${highlightId}`);
+      if (el) {
         el.scrollIntoView({ behavior: 'smooth', block: 'center' });
         setGlowId(highlightId);
-        setTimeout(() => setGlowId(null), 2500);
-      }, 400);
-    }
+        setTimeout(() => setGlowId(null), 2000);
+      }
+    }, 100);
   }, [highlightId]);
 
   if (!supermarket) return <div className="p-8 text-center font-bold text-slate-400">Negozio non trovato</div>;
