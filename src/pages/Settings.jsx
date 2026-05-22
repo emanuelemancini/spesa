@@ -163,14 +163,21 @@ const SettingsPage = () => {
     const [updateStatus, setUpdateStatus] = useState('idle'); // idle | checking | available | updated | latest
 
     const handleCheckUpdate = async () => {
-        if (!('serviceWorker' in navigator)) { setUpdateStatus('checking'); setTimeout(() => { window.location.reload(); }, 500); return; }
         setUpdateStatus('checking');
         try {
-            const reg = await navigator.serviceWorker.getRegistration();
-            if (reg) await reg.update();
+            // 1. Svuota tutti i cache del service worker
+            if ('caches' in window) {
+                const keys = await caches.keys();
+                await Promise.all(keys.map(k => caches.delete(k)));
+            }
+            // 2. Forza aggiornamento e deregistrazione del SW attivo
+            if ('serviceWorker' in navigator) {
+                const regs = await navigator.serviceWorker.getRegistrations();
+                await Promise.all(regs.map(r => r.unregister()));
+            }
         } catch {}
-        // Con skipWaiting il nuovo SW è già attivo — basta ricaricare
-        setTimeout(() => { window.location.reload(); }, 800);
+        // 3. Ricarica — il browser scarica tutto da zero
+        window.location.reload(true);
     };
 
     const handleRemoveCat = (type, cat) => {
