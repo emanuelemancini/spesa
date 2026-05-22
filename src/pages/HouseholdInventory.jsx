@@ -156,10 +156,21 @@ const HouseholdInventory = () => {
                     <div className="flex flex-wrap items-center gap-1.5 mt-1.5">
                       <span className="text-[10px] font-black text-primary uppercase tracking-widest bg-primary/5 px-2 py-0.5 rounded-md">Casa</span>
                       {product.category && <><span className="text-[10px] font-black text-slate-300">•</span><span className="text-[10px] font-black text-slate-500 uppercase tracking-widest bg-slate-100 px-2 py-0.5 rounded-md">{product.category}</span></>}
-                      <div className="flex items-center gap-1 text-slate-400">
-                        <span className="material-symbols-outlined !text-[12px]">storefront</span>
-                        <p className="text-[10px] font-black uppercase tracking-tighter truncate max-w-[80px]">{supermarkets.find(s => s.id === (product.supermarketIds?.[0] || product.supermarketId))?.name || 'N/D'}</p>
-                      </div>
+                      {(() => {
+                        const store = supermarkets.find(s => s.id === (product.supermarketIds?.[0] || product.supermarketId));
+                        return store ? (
+                          <button onClick={(e) => { e.stopPropagation(); navigate(`/stores/${store.id}?highlight=${product.id}`); }} className="flex items-center gap-1 text-primary/60 hover:text-primary active:scale-95 transition-all">
+                            <span className="material-symbols-outlined !text-[12px]">storefront</span>
+                            <p className="text-[10px] font-black uppercase tracking-tighter truncate max-w-[80px]">{store.name}</p>
+                            <span className="material-symbols-outlined !text-[10px]">arrow_forward</span>
+                          </button>
+                        ) : (
+                          <div className="flex items-center gap-1 text-slate-400">
+                            <span className="material-symbols-outlined !text-[12px]">storefront</span>
+                            <p className="text-[10px] font-black uppercase tracking-tighter">N/D</p>
+                          </div>
+                        );
+                      })()}
                     </div>
                   </div>
                 </div>
@@ -229,10 +240,21 @@ const HouseholdInventory = () => {
                     <div className="flex flex-wrap items-center gap-1.5 mt-1.5">
                       <span className="text-[10px] font-black text-primary uppercase tracking-widest bg-primary/5 px-2 py-0.5 rounded-md">Casa</span>
                       {product.category && <><span className="text-[10px] font-black text-slate-300">•</span><span className="text-[10px] font-black text-slate-500 uppercase tracking-widest bg-slate-100 px-2 py-0.5 rounded-md">{product.category}</span></>}
-                      <div className="flex items-center gap-1 text-slate-400">
-                        <span className="material-symbols-outlined !text-[12px]">storefront</span>
-                        <p className="text-[10px] font-black uppercase tracking-tighter truncate max-w-[80px]">{supermarkets.find(s => s.id === (product.supermarketIds?.[0] || product.supermarketId))?.name || 'N/D'}</p>
-                      </div>
+                      {(() => {
+                        const store = supermarkets.find(s => s.id === (product.supermarketIds?.[0] || product.supermarketId));
+                        return store ? (
+                          <button onClick={(e) => { e.stopPropagation(); navigate(`/stores/${store.id}?highlight=${product.id}`); }} className="flex items-center gap-1 text-primary/60 hover:text-primary active:scale-95 transition-all">
+                            <span className="material-symbols-outlined !text-[12px]">storefront</span>
+                            <p className="text-[10px] font-black uppercase tracking-tighter truncate max-w-[80px]">{store.name}</p>
+                            <span className="material-symbols-outlined !text-[10px]">arrow_forward</span>
+                          </button>
+                        ) : (
+                          <div className="flex items-center gap-1 text-slate-400">
+                            <span className="material-symbols-outlined !text-[12px]">storefront</span>
+                            <p className="text-[10px] font-black uppercase tracking-tighter">N/D</p>
+                          </div>
+                        );
+                      })()}
                     </div>
                   </div>
                 </div>

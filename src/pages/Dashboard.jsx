@@ -223,12 +223,21 @@ const Dashboard = () => {
                               })()}
                             </p>
                           </div>
-                          <div className="flex items-center gap-1 text-slate-400">
-                            <span className="material-symbols-outlined !text-[12px]">storefront</span>
-                            <p className="text-[10px] font-black uppercase tracking-tighter truncate max-w-[80px]">
-                              {supermarkets.find(s => s.id === product.supermarketId)?.name || 'N/D'}
-                            </p>
-                          </div>
+                          {(() => {
+                            const store = supermarkets.find(s => s.id === product.supermarketId);
+                            return store ? (
+                              <button onClick={(e) => { e.stopPropagation(); navigate(`/stores/${store.id}?highlight=${product.id}`); }} className="flex items-center gap-1 text-primary/60 hover:text-primary active:scale-95 transition-all">
+                                <span className="material-symbols-outlined !text-[12px]">storefront</span>
+                                <p className="text-[10px] font-black uppercase tracking-tighter truncate max-w-[80px]">{store.name}</p>
+                                <span className="material-symbols-outlined !text-[10px]">arrow_forward</span>
+                              </button>
+                            ) : (
+                              <div className="flex items-center gap-1 text-slate-400">
+                                <span className="material-symbols-outlined !text-[12px]">storefront</span>
+                                <p className="text-[10px] font-black uppercase tracking-tighter">N/D</p>
+                              </div>
+                            );
+                          })()}
                         </div>
                       </div>
                     </div>
