@@ -68,7 +68,7 @@ function SectionBadges({ products }) {
 
 // ── Product row ──────────────────────────────────────────────────────────────
 
-function ProductRow({ product, onOpen, onToggleBought, dragHandleProps, isReordering }) {
+function ProductRow({ product, onOpen, onToggleBought, dragHandleProps, isReordering, isGlowing }) {
   const now = new Date();
   const isExpired  = product.expiryDate && new Date(product.expiryDate) < now;
   const isExpiring = !isExpired && product.expiryDate && (new Date(product.expiryDate) - now) < 2 * 86400000;
@@ -82,8 +82,9 @@ function ProductRow({ product, onOpen, onToggleBought, dragHandleProps, isReorde
 
   return (
     <div
+      id={`product-${product.id}`}
       onClick={() => !isReordering && onOpen(product)}
-      className={`flex items-center gap-3 rounded-[22px] bg-white p-3 border border-slate-100 border-l-4 ${borderColor} shadow-sm transition-all ${isReordering ? '' : 'active:scale-[0.98] cursor-pointer'}`}
+      className={`flex items-center gap-3 rounded-[22px] bg-white p-3 border border-l-4 ${borderColor} shadow-sm transition-all ${isReordering ? '' : 'active:scale-[0.98] cursor-pointer'} ${isGlowing ? 'border-primary/40 shadow-[0_0_0_3px_rgba(45,90,39,0.15),0_0_20px_rgba(45,90,39,0.15)] animate-pulse' : 'border-slate-100'}`}
     >
       <DragHandle dragHandleProps={dragHandleProps} />
       <ProductImage product={product} className="size-14 rounded-2xl shrink-0" />
@@ -237,6 +238,8 @@ const SupermarketDetail = () => {
 
   const selectedProductId = searchParams.get('productId');
   const selectedProduct   = products.find(p => p.id === selectedProductId);
+  const highlightId       = searchParams.get('highlight');
+  const [glowId, setGlowId] = React.useState(highlightId || null);
 
   React.useEffect(() => {
     if (supermarket) {
@@ -244,6 +247,19 @@ const SupermarketDetail = () => {
       setTempName(supermarket.name);
     }
   }, [supermarket]);
+
+  // Scroll + glow sul prodotto evidenziato
+  React.useEffect(() => {
+    if (!highlightId) return;
+    const el = document.getElementById(`product-${highlightId}`);
+    if (el) {
+      setTimeout(() => {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        setGlowId(highlightId);
+        setTimeout(() => setGlowId(null), 2500);
+      }, 400);
+    }
+  }, [highlightId]);
 
   if (!supermarket) return <div className="p-8 text-center font-bold text-slate-400">Negozio non trovato</div>;
 
@@ -468,7 +484,7 @@ const SupermarketDetail = () => {
               }}
             >
               {(p, { dragHandleProps }) => (
-                <ProductRow product={p} onOpen={openProductDetail} onToggleBought={(pid, status) => updateProduct(pid, { status })} dragHandleProps={dragHandleProps} isReordering={isReordering} />
+                <ProductRow product={p} onOpen={openProductDetail} onToggleBought={(pid, status) => updateProduct(pid, { status })} dragHandleProps={dragHandleProps} isReordering={isReordering} isGlowing={glowId === p.id} />
               )}
             </SortableList>
           </section>
@@ -491,7 +507,7 @@ const SupermarketDetail = () => {
               }}
             >
               {(p, { dragHandleProps }) => (
-                <ProductRow product={p} onOpen={openProductDetail} onToggleBought={(pid, status) => updateProduct(pid, { status })} dragHandleProps={dragHandleProps} isReordering={isReordering} />
+                <ProductRow product={p} onOpen={openProductDetail} onToggleBought={(pid, status) => updateProduct(pid, { status })} dragHandleProps={dragHandleProps} isReordering={isReordering} isGlowing={glowId === p.id} />
               )}
             </SortableList>
           </section>
