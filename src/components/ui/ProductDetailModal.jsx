@@ -378,6 +378,18 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
                     placeholder="https://..."
                     className="flex-1 h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-sm font-bold outline-none focus:ring-2 focus:ring-primary/20"
                   />
+                  {urlInput.trim() && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        navigator.clipboard.writeText(urlInput.trim());
+                      }}
+                      className="h-10 w-10 rounded-xl bg-slate-100 text-slate-500 flex items-center justify-center active:scale-95 transition-transform"
+                      title="Copia URL"
+                    >
+                      <span className="material-symbols-outlined !text-lg">content_copy</span>
+                    </button>
+                  )}
                   <button
                     type="button"
                     onClick={() => {
