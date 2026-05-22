@@ -32,7 +32,7 @@ function ConfirmModal({ title, message, confirmLabel, danger, onConfirm, onClose
 
 const SettingsPage = () => {
     const navigate = useNavigate();
-    const { user, config, updateUser, updateConfig, clearStore, logout, showToast } = useStore();
+    const { user, config, products, updateUser, updateConfig, updateProduct, clearStore, logout, showToast } = useStore();
 
     const [editName, setEditName] = useState(user.name);
     const [kitchenCats, setKitchenCats] = useState(config.kitchenCategories);
@@ -149,9 +149,14 @@ const SettingsPage = () => {
         if (!trimmed || trimmed === oldName) { setEditingCat(null); return; }
         const target = type === 'kitchen' ? kitchenCats : homeCats;
         if (target.includes(trimmed)) { setEditingCat(null); return; }
+        // Aggiorna lista categorie
         const newList = target.map(c => c === oldName ? trimmed : c);
         if (type === 'kitchen') { setKitchenCats(newList); updateConfig({ kitchenCategories: newList }); }
         else { setHomeCats(newList); updateConfig({ homeCategories: newList }); }
+        // Aggiorna tutti i prodotti con la vecchia categoria
+        products
+            .filter(p => p.category === oldName)
+            .forEach(p => updateProduct(p.id, { category: trimmed }));
         setEditingCat(null);
     };
 
