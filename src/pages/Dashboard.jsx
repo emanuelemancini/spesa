@@ -21,15 +21,20 @@ const Dashboard = () => {
   // Modal "prodotto consumato"
   const [consumedModal, setConsumedModal] = React.useState(null); // { product, newExpiryDate, openNow }
 
+  const [consumedConfirm, setConsumedConfirm] = React.useState(null); // prodotto da confermare
+
   const handleConsumed = (e, product) => {
     e.stopPropagation();
+    setConsumedConfirm(product);
+  };
+
+  const handleConsumedAfterConfirm = (product) => {
+    setConsumedConfirm(null);
     const newQty = (product.quantity || 1) - 1;
     if (newQty <= 0) {
-      // Ultimo pezzo: segna come esaurito, rimuovi dalla dash
       updateProduct(product.id, { quantity: 0, expiryDate: null, openedDate: null, status: 'bought' });
       showToast(`${product.name} terminato!`, 'success');
     } else {
-      // Rimangono altri pezzi: apri il modal per aggiornare
       updateProduct(product.id, { quantity: newQty });
       setConsumedModal({
         product: { ...product, quantity: newQty },
@@ -225,18 +230,18 @@ const Dashboard = () => {
                     })}
                     className={`group relative bg-white p-4 rounded-[28px] border border-slate-100 shadow-sm cursor-pointer active:scale-[0.98] transition-all border-l-[6px] ${isToday ? 'border-l-red-500' : 'border-l-orange-400'}`}
                   >
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-stretch gap-4">
                       <ProductImage
                         product={product}
-                        className="size-16 rounded-2xl shrink-0 border border-slate-50/50"
+                        className="size-16 rounded-2xl shrink-0 border border-slate-50/50 self-center"
                       />
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between gap-2 mb-0.5">
+                        <div className="flex items-start justify-between gap-2 mb-0.5">
                           <div className="flex items-center gap-2 min-w-0">
                             <p className="font-black text-slate-900 text-sm tracking-tight truncate">{product.name}</p>
                             <span className={`size-2 rounded-full animate-ping shrink-0 ${isToday ? 'bg-red-500' : 'bg-orange-400'}`}></span>
                           </div>
-                          <div className="flex flex-col items-end justify-between self-stretch gap-1 shrink-0">
+                          <div className="flex flex-col items-end justify-between gap-6 shrink-0">
                             {isToday ? (
                               <span className="text-[9px] font-black bg-red-500 text-white px-2 py-0.5 rounded-md uppercase tracking-widest">Critico</span>
                             ) : (
@@ -607,6 +612,35 @@ const Dashboard = () => {
           }
         }}
       />
+
+      {/* Conferma consumo */}
+      {consumedConfirm && (
+        <div className="fixed inset-0 z-[150] flex items-end justify-center px-4 pb-8" onClick={() => setConsumedConfirm(null)}>
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
+          <div className="relative w-full max-w-sm bg-white rounded-[32px] shadow-2xl p-6 animate-fade-in-up" onClick={e => e.stopPropagation()}>
+            <div className="flex flex-col items-center text-center gap-3 mb-6">
+              <div className="size-14 rounded-full bg-sky-50 flex items-center justify-center">
+                <span className="material-symbols-outlined !text-3xl text-sky-500">restaurant</span>
+              </div>
+              <h3 className="text-lg font-black text-slate-900 tracking-tight">Hai consumato questo prodotto?</h3>
+              <p className="text-sm text-slate-400 font-medium leading-snug">
+                <span className="font-black text-slate-600">{consumedConfirm.name}</span>
+                {consumedConfirm.quantity > 1
+                  ? ` — rimangono ${consumedConfirm.quantity - 1} ${consumedConfirm.quantity - 1 === 1 ? 'confezione' : 'confezioni'}`
+                  : ' — è l\'ultimo rimasto'}
+              </p>
+            </div>
+            <div className="flex gap-3">
+              <button onClick={() => setConsumedConfirm(null)} className="flex-1 h-12 rounded-2xl bg-slate-100 text-slate-600 text-sm font-black uppercase tracking-widest active:scale-95 transition-all">
+                Annulla
+              </button>
+              <button onClick={() => handleConsumedAfterConfirm(consumedConfirm)} className="flex-1 h-12 rounded-2xl bg-sky-500 text-white text-sm font-black uppercase tracking-widest shadow-lg shadow-sky-200 active:scale-95 transition-all">
+                Sì, consumato
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Modal prodotti rimanenti dopo consumo */}
       {consumedModal && (
