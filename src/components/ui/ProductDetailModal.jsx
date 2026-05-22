@@ -5,9 +5,45 @@ import { it } from 'date-fns/locale';
 import ProductImage from './ProductImage';
 import useStore from '../../store/useStore';
 
+const ConfirmDialog = ({ isOpen, title, message, onConfirm, onCancel, confirmLabel = 'Conferma', confirmColor = 'bg-red-500' }) => {
+  if (!isOpen) return null;
+  return (
+    <div className="fixed inset-0 z-[200] flex items-end justify-center px-4 pb-8" onClick={onCancel}>
+      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
+      <div
+        className="relative w-full max-w-sm bg-white rounded-[32px] shadow-2xl p-6 animate-fade-in-up"
+        onClick={e => e.stopPropagation()}
+      >
+        <div className="flex flex-col items-center text-center gap-3 mb-6">
+          <div className="size-14 rounded-full bg-red-50 flex items-center justify-center">
+            <span className="material-symbols-outlined !text-3xl text-red-500">undo</span>
+          </div>
+          <h3 className="text-lg font-black text-slate-900 tracking-tight">{title}</h3>
+          {message && <p className="text-sm text-slate-400 font-medium leading-snug">{message}</p>}
+        </div>
+        <div className="flex gap-3">
+          <button
+            onClick={onCancel}
+            className="flex-1 h-12 rounded-2xl bg-slate-100 text-slate-600 text-sm font-black uppercase tracking-widest active:scale-95 transition-all"
+          >
+            Annulla
+          </button>
+          <button
+            onClick={onConfirm}
+            className={`flex-1 h-12 rounded-2xl ${confirmColor} text-white text-sm font-black uppercase tracking-widest shadow-lg active:scale-95 transition-all`}
+          >
+            {confirmLabel}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const ProductDetailModal = ({ product, isOpen, onClose }) => {
   const { openProduct, updateProduct, deleteProduct, addProduct, supermarkets, products, config } = useStore();
   const [isEditing, setIsEditing] = React.useState(false);
+  const [confirmDialog, setConfirmDialog] = React.useState(null); // { title, message, onConfirm }
   const [showQtySelector, setShowQtySelector] = React.useState(false);
   const [isDuplicating, setIsDuplicating] = React.useState(false);
   const [editedData, setEditedData] = React.useState({});
@@ -70,9 +106,14 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
 
   const handleOpen = () => openProduct(product.id, product.suggestedConsumptionDays || 3);
   const handleUndoOpen = () => {
-    if (window.confirm('Annullare l\'apertura di questo prodotto?')) {
-      updateProduct(product.id, { status: 'bought', openedDate: null });
-    }
+    setConfirmDialog({
+      title: 'Annulla apertura',
+      message: 'Vuoi riportare il prodotto allo stato precedente all\'apertura?',
+      onConfirm: () => {
+        updateProduct(product.id, { status: 'bought', openedDate: null });
+        setConfirmDialog(null);
+      },
+    });
   };
   const handleFinish = () => {
     updateProduct(product.id, { quantity: 0, openedDate: null, expiryDate: null });
@@ -726,6 +767,14 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
         </div>
       </div>
       </div>
+      <ConfirmDialog
+        isOpen={!!confirmDialog}
+        title={confirmDialog?.title}
+        message={confirmDialog?.message}
+        onConfirm={confirmDialog?.onConfirm}
+        onCancel={() => setConfirmDialog(null)}
+        confirmLabel="Sì, annulla"
+      />
     </>
   );
 };
