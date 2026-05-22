@@ -75,6 +75,12 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
       setThumbOffsetX(product.thumbOffsetX ?? 0);
       setThumbOffsetY(product.thumbOffsetY ?? 0);
       setThumbZoom(product.thumbZoom ?? 1);
+      // Pre-popola il campo URL se l'immagine è un URL (non base64)
+      if (product.image && product.image.startsWith('http')) {
+        setUrlInput(product.image);
+      } else {
+        setUrlInput('');
+      }
     }
   }, [product?.id]);
 
