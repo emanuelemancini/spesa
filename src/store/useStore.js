@@ -17,7 +17,7 @@ const useStore = create(
       toast: null, // { message, type, id }
       config: {
         kitchenCategories: ['Fresco', 'Dispensa', 'Surgelati', 'Bevande', 'Altro'],
-        homeCategories: ['Detersivi', 'Igiene Persona', 'Accessori', 'Dispensa'],
+        homeCategories: ['Detersivi', 'Igiene', 'Accessori', 'Dispensa'],
         dataCleared: false,
         notifications: {
           pushEnabled: true,
@@ -63,12 +63,22 @@ const useStore = create(
         }
       }),
 
-      replaceState: (incoming) => set({
-        products: incoming.products || [],
-        supermarkets: incoming.supermarkets || [],
-        user: incoming.user || useStore.getState().user,
-        readNotificationIds: incoming.readNotificationIds || useStore.getState().readNotificationIds,
-      }),
+      replaceState: (incoming) => {
+        // Normalizza categorie anche sui dati in arrivo dal cloud
+        const products = (incoming.products || []).map(p =>
+          p.category === 'Igiene Persona' ? { ...p, category: 'Igiene' } : p
+        );
+        const homeCats = (incoming.config?.homeCategories || []).map(c =>
+          c === 'Igiene Persona' ? 'Igiene' : c
+        );
+        set({
+          products,
+          supermarkets: incoming.supermarkets || [],
+          user: incoming.user || useStore.getState().user,
+          readNotificationIds: incoming.readNotificationIds || useStore.getState().readNotificationIds,
+          ...(incoming.config ? { config: { ...incoming.config, homeCategories: homeCats } } : {}),
+        });
+      },
 
       // Config Actions
       updateConfig: (updates) => set((state) => ({
@@ -183,23 +193,19 @@ const useStore = create(
     }),
     {
       name: 'spesa-storage',
-      version: 10,
+      version: 11,
       migrate: (persisted, version) => {
-        if (version < 10) {
-          // Rinomina categoria "Igiene Persona" → "Igiene" nei prodotti e nella config
-          const renamed = (persisted.products || []).map(p =>
+        // Rinomina "Igiene Persona" → "Igiene" — applicato a tutte le versioni precedenti
+        const fixIgiene = (data) => {
+          const products = (data.products || []).map(p =>
             p.category === 'Igiene Persona' ? { ...p, category: 'Igiene' } : p
           );
-          const homeCats = (persisted.config?.homeCategories || []).map(c =>
+          const homeCats = (data.config?.homeCategories || []).map(c =>
             c === 'Igiene Persona' ? 'Igiene' : c
           );
-          return {
-            ...persisted,
-            products: renamed,
-            config: { ...persisted.config, homeCategories: homeCats },
-          };
-        }
-        return { ...persisted };
+          return { ...data, products, config: { ...data.config, homeCategories: homeCats } };
+        };
+        return fixIgiene(persisted);
       },
       partialize: (state) => ({
         supermarkets: state.supermarkets,

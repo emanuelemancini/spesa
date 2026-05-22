@@ -90,10 +90,10 @@ const SEED_DATA = {
     // --- INVENTARIO CASA (Household Section) ---
     { id: 'p7', name: 'Detersivo Piatti', type: 'home', category: 'Detersivi', supermarketId: '2', status: 'bought', quantity: 1 },
     { id: 'p8', name: 'Spugne Cucina', type: 'home', category: 'Accessori', supermarketId: '2', status: 'to-buy', quantity: 0 },
-    { id: 'p9', name: 'Carta Igienica', type: 'home', category: 'Igiene Persona', supermarketId: '3', status: 'bought', quantity: 4 },
+    { id: 'p9', name: 'Carta Igienica', type: 'home', category: 'Igiene', supermarketId: '3', status: 'bought', quantity: 4 },
     { id: 'p10', name: 'Sacchetti Pattumiera', type: 'home', category: 'Accessori', supermarketId: '1', status: 'bought', quantity: 2 },
     { id: 'p13', name: 'Sgrassatore Universale', type: 'home', category: 'Detersivi', supermarketId: '2', status: 'bought', quantity: 1 },
-    { id: 'p14', name: 'Sapone Mani Ricarica', type: 'home', category: 'Igiene Persona', supermarketId: '3', status: 'to-buy', quantity: 0 },
+    { id: 'p14', name: 'Sapone Mani Ricarica', type: 'home', category: 'Igiene', supermarketId: '3', status: 'to-buy', quantity: 0 },
     { id: 'p15', name: 'Tabs Lavastoviglie', type: 'home', category: 'Detersivi', supermarketId: '1', status: 'bought', quantity: 20 },
     { id: 'p16', name: 'Candeggina Gentile', type: 'home', category: 'Detersivi', supermarketId: '2', status: 'bought', quantity: 1 },
     
