@@ -4,6 +4,32 @@ import { createPortal } from 'react-dom';
 import useStore from '../store/useStore';
 import { User, Settings, Check, Plus, X, Camera, Palette, ChevronRight, Bell } from 'lucide-react';
 import { pushModule } from '../security/push';
+import { DndContext, closestCenter, PointerSensor, TouchSensor, useSensor, useSensors } from '@dnd-kit/core';
+import { SortableContext, horizontalListSortingStrategy, useSortable, arrayMove } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+
+function DraggableCat({ id, label, color, onEdit, onRemove, isEditing, editValue, onEditChange, onEditKeyDown, onEditBlur }) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
+  const style = { transform: CSS.Transform.toString(transform), transition, opacity: isDragging ? 0.5 : 1 };
+  if (isEditing) {
+    return (
+      <div ref={setNodeRef} style={style} className={`flex items-center gap-1 ${color.editBg} border ${color.editBorder} rounded-xl px-2 py-1`}>
+        <input autoFocus value={editValue} onChange={onEditChange} onKeyDown={onEditKeyDown} onBlur={onEditBlur}
+          className={`text-[11px] font-black uppercase tracking-wider ${color.editText} bg-transparent outline-none w-24`} />
+      </div>
+    );
+  }
+  return (
+    <span ref={setNodeRef} style={style} className={`flex items-center gap-1.5 px-3 py-1.5 ${color.bg} ${color.text} rounded-xl text-[11px] font-black uppercase tracking-wider border ${color.border} cursor-grab active:cursor-grabbing transition-colors`}
+      {...attributes} {...listeners}>
+      <span className="material-symbols-outlined !text-[10px] opacity-40">drag_indicator</span>
+      <span onClick={(e) => { e.stopPropagation(); onEdit(); }}>{label}</span>
+      <button onClick={(e) => { e.stopPropagation(); onRemove(); }} className="hover:text-red-500 hover:bg-red-50 rounded-full p-0.5 transition-colors ml-0.5">
+        <X size={12} />
+      </button>
+    </span>
+  );
+}
 
 function ConfirmModal({ title, message, confirmLabel, danger, onConfirm, onClose }) {
     return createPortal(
@@ -50,6 +76,20 @@ const SettingsPage = () => {
         alertLowStock: true,
         alertBargains: false
     });
+
+    // Dnd sensors
+    const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }), useSensor(TouchSensor, { activationConstraint: { delay: 150, tolerance: 5 } }));
+
+    const handleCatDragEnd = (type, event) => {
+      const { active, over } = event;
+      if (!over || active.id === over.id) return;
+      const list = type === 'kitchen' ? kitchenCats : homeCats;
+      const oldIndex = list.indexOf(active.id);
+      const newIndex = list.indexOf(over.id);
+      const newList = arrayMove(list, oldIndex, newIndex);
+      if (type === 'kitchen') { setKitchenCats(newList); updateConfig({ kitchenCategories: newList }); }
+      else { setHomeCats(newList); updateConfig({ homeCategories: newList }); }
+    };
 
     // Push subscription state
     const [pushSupported, setPushSupported] = useState(false);
@@ -252,29 +292,25 @@ const SettingsPage = () => {
                         </div>
                     </div>
                     
-                    <div className="flex flex-wrap gap-2 mb-4">
-                        {kitchenCats.map(cat => (
-                            editingCat?.type === 'kitchen' && editingCat?.oldName === cat ? (
-                                <div key={cat} className="flex items-center gap-1 bg-primary/5 border border-primary/30 rounded-xl px-2 py-1">
-                                    <input
-                                        autoFocus
-                                        value={editingCat.value}
-                                        onChange={e => setEditingCat({ ...editingCat, value: e.target.value })}
-                                        onKeyDown={e => { if (e.key === 'Enter') handleRenameCat('kitchen', cat, editingCat.value); if (e.key === 'Escape') setEditingCat(null); }}
-                                        onBlur={() => handleRenameCat('kitchen', cat, editingCat.value)}
-                                        className="text-[11px] font-black uppercase tracking-wider text-primary bg-transparent outline-none w-24"
-                                    />
-                                </div>
-                            ) : (
-                                <span key={cat} onClick={() => setEditingCat({ type: 'kitchen', oldName: cat, value: cat })} className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/5 text-primary rounded-xl text-[11px] font-black uppercase tracking-wider border border-primary/10 cursor-pointer hover:bg-primary/10 transition-colors">
-                                    {cat}
-                                    <button onClick={(e) => { e.stopPropagation(); handleRemoveCat('kitchen', cat); }} className="hover:text-red-500 hover:bg-red-50 rounded-full p-0.5 transition-colors">
-                                        <X size={12} />
-                                    </button>
-                                </span>
-                            )
-                        ))}
-                    </div>
+                    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={(e) => handleCatDragEnd('kitchen', e)}>
+                      <SortableContext items={kitchenCats} strategy={horizontalListSortingStrategy}>
+                        <div className="flex flex-wrap gap-2 mb-4">
+                          {kitchenCats.map(cat => (
+                            <DraggableCat
+                              key={cat} id={cat} label={cat}
+                              color={{ bg: 'bg-primary/5', text: 'text-primary', border: 'border-primary/10', editBg: 'bg-primary/5', editBorder: 'border-primary/30', editText: 'text-primary' }}
+                              isEditing={editingCat?.type === 'kitchen' && editingCat?.oldName === cat}
+                              editValue={editingCat?.value || ''}
+                              onEdit={() => setEditingCat({ type: 'kitchen', oldName: cat, value: cat })}
+                              onRemove={() => handleRemoveCat('kitchen', cat)}
+                              onEditChange={e => setEditingCat({ ...editingCat, value: e.target.value })}
+                              onEditKeyDown={e => { if (e.key === 'Enter') handleRenameCat('kitchen', cat, editingCat.value); if (e.key === 'Escape') setEditingCat(null); }}
+                              onEditBlur={() => handleRenameCat('kitchen', cat, editingCat.value)}
+                            />
+                          ))}
+                        </div>
+                      </SortableContext>
+                    </DndContext>
                     <div className="flex gap-2 relative">
                         <input 
                             type="text"
@@ -305,31 +341,27 @@ const SettingsPage = () => {
                         </div>
                     </div>
                     
-                    <div className="flex flex-wrap gap-2 mb-4">
-                        {homeCats.map(cat => (
-                            editingCat?.type === 'home' && editingCat?.oldName === cat ? (
-                                <div key={cat} className="flex items-center gap-1 bg-blue-50 border border-blue-300 rounded-xl px-2 py-1">
-                                    <input
-                                        autoFocus
-                                        value={editingCat.value}
-                                        onChange={e => setEditingCat({ ...editingCat, value: e.target.value })}
-                                        onKeyDown={e => { if (e.key === 'Enter') handleRenameCat('home', cat, editingCat.value); if (e.key === 'Escape') setEditingCat(null); }}
-                                        onBlur={() => handleRenameCat('home', cat, editingCat.value)}
-                                        className="text-[11px] font-black uppercase tracking-wider text-blue-600 bg-transparent outline-none w-24"
-                                    />
-                                </div>
-                            ) : (
-                                <span key={cat} onClick={() => setEditingCat({ type: 'home', oldName: cat, value: cat })} className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 text-blue-600 rounded-xl text-[11px] font-black uppercase tracking-wider border border-blue-100 cursor-pointer hover:bg-blue-100 transition-colors">
-                                    {cat}
-                                    <button onClick={(e) => { e.stopPropagation(); handleRemoveCat('home', cat); }} className="hover:text-red-500 hover:bg-red-50 rounded-full p-0.5 transition-colors">
-                                        <X size={12} />
-                                    </button>
-                                </span>
-                            )
-                        ))}
-                    </div>
+                    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={(e) => handleCatDragEnd('home', e)}>
+                      <SortableContext items={homeCats} strategy={horizontalListSortingStrategy}>
+                        <div className="flex flex-wrap gap-2 mb-4">
+                          {homeCats.map(cat => (
+                            <DraggableCat
+                              key={cat} id={cat} label={cat}
+                              color={{ bg: 'bg-blue-50', text: 'text-blue-600', border: 'border-blue-100', editBg: 'bg-blue-50', editBorder: 'border-blue-300', editText: 'text-blue-600' }}
+                              isEditing={editingCat?.type === 'home' && editingCat?.oldName === cat}
+                              editValue={editingCat?.value || ''}
+                              onEdit={() => setEditingCat({ type: 'home', oldName: cat, value: cat })}
+                              onRemove={() => handleRemoveCat('home', cat)}
+                              onEditChange={e => setEditingCat({ ...editingCat, value: e.target.value })}
+                              onEditKeyDown={e => { if (e.key === 'Enter') handleRenameCat('home', cat, editingCat.value); if (e.key === 'Escape') setEditingCat(null); }}
+                              onEditBlur={() => handleRenameCat('home', cat, editingCat.value)}
+                            />
+                          ))}
+                        </div>
+                      </SortableContext>
+                    </DndContext>
                     <div className="flex gap-2 relative">
-                        <input 
+                        <input
                             type="text"
                             placeholder="Nuova categoria..."
                             value={newCat.home}
