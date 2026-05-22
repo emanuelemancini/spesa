@@ -270,7 +270,7 @@ const Dashboard = () => {
                         })()}
                       </div>
                       {/* Badge colonna destra */}
-                      <div className="flex flex-col items-end justify-between shrink-0">
+                      <div className="flex flex-col items-end justify-between shrink-0 min-h-[64px]">
                         {isToday ? (
                           <span className="text-[9px] font-black bg-red-500 text-white px-2 py-0.5 rounded-md uppercase tracking-widest">Critico</span>
                         ) : (
