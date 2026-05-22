@@ -168,10 +168,14 @@ const Pantry = () => {
             >
               {(product, { dragHandleProps }) => {
                 const isExpiring = product.expiryDate && isBefore(new Date(product.expiryDate), addDays(new Date(), 3));
+                const qty = product.quantity ?? 0;
+                const borderColor = qty === 0 ? 'border-l-red-500' : qty === 1 ? 'border-l-orange-500' : 'border-l-primary/30';
+                const dotColor = qty === 0 ? 'bg-red-500' : 'bg-orange-500';
+                const showDot = qty <= 1 || isExpiring;
                 return (
                   <div
                     onClick={() => !isReordering && openProductDetail(product.id)}
-                    className={`group relative bg-white border border-slate-100 border-l-[6px] rounded-[28px] p-4 shadow-sm transition-all ${isReordering ? '' : 'active:scale-[0.98] cursor-pointer'} ${isExpiring ? 'border-l-orange-500' : 'border-l-primary/30'}`}
+                    className={`group relative bg-white border border-slate-100 border-l-[6px] rounded-[28px] p-4 shadow-sm transition-all ${isReordering ? '' : 'active:scale-[0.98] cursor-pointer'} ${borderColor}`}
                   >
                     <div className="flex items-center gap-4">
                       <DragHandle dragHandleProps={dragHandleProps} />
@@ -179,7 +183,7 @@ const Pantry = () => {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-0.5">
                           <p className="font-black text-slate-900 text-sm tracking-tight truncate">{product.name}</p>
-                          {isExpiring && <span className="size-2 bg-orange-500 rounded-full animate-ping shrink-0"></span>}
+                          {showDot && <span className={`size-2 ${dotColor} rounded-full animate-ping shrink-0`}></span>}
                         </div>
                         <div className="flex flex-col gap-1">
                           <div className="w-full max-w-[120px] h-1 bg-slate-50 rounded-full overflow-hidden">

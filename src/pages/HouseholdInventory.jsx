@@ -136,10 +136,15 @@ const HouseholdInventory = () => {
             reorderProducts([...newIds, ...otherIds]);
           }}
         >
-          {(product, { dragHandleProps }) => (
+          {(product, { dragHandleProps }) => {
+            const qty = product.quantity ?? 0;
+            const borderColor = qty === 0 ? 'border-l-red-500' : qty === 1 ? 'border-l-orange-500' : 'border-l-primary/30';
+            const dotColor = qty === 0 ? 'bg-red-500' : 'bg-orange-500';
+            const barColor = qty === 0 ? 'bg-red-400' : qty === 1 ? 'bg-orange-400' : 'bg-primary';
+            return (
             <div
               onClick={() => !isReordering && openProductDetail(product.id)}
-              className={`group relative bg-white border border-slate-100 border-l-[6px] border-l-orange-500 rounded-[28px] p-4 shadow-sm transition-all ${isReordering ? '' : 'active:scale-[0.98] cursor-pointer'}`}
+              className={`group relative bg-white border border-slate-100 border-l-[6px] ${borderColor} rounded-[28px] p-4 shadow-sm transition-all ${isReordering ? '' : 'active:scale-[0.98] cursor-pointer'}`}
             >
               <div className="flex items-center gap-4">
                 <DragHandle dragHandleProps={dragHandleProps} />
@@ -147,11 +152,11 @@ const HouseholdInventory = () => {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-0.5">
                     <p className="font-black text-slate-900 text-sm tracking-tight truncate">{product.name}</p>
-                    <span className="size-2 bg-orange-500 rounded-full animate-ping shrink-0"></span>
+                    {qty <= 1 && <span className={`size-2 ${dotColor} rounded-full animate-ping shrink-0`}></span>}
                   </div>
                   <div className="flex flex-col gap-1">
                     <div className="w-full max-w-[120px] h-1 bg-slate-50 rounded-full overflow-hidden">
-                      <div className="h-full rounded-full bg-orange-400 transition-all duration-500" style={{ width: `${Math.min(100, (product.quantity / 10) * 100)}%` }}></div>
+                      <div className={`h-full rounded-full ${barColor} transition-all duration-500`} style={{ width: `${Math.min(100, (qty / 10) * 100)}%` }}></div>
                     </div>
                     <div className="flex flex-wrap items-center gap-1.5 mt-1.5">
                       <span className="text-[10px] font-black text-primary uppercase tracking-widest bg-primary/5 px-2 py-0.5 rounded-md">Casa</span>
@@ -196,7 +201,7 @@ const HouseholdInventory = () => {
                 )}
               </div>
             </div>
-          )}
+          )}}
         </SortableList>
           {lowStock.length === 0 && (
             <div className="py-12 text-center bg-slate-50 rounded-3xl border border-dashed border-slate-200">
