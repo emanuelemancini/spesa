@@ -198,9 +198,9 @@ function App() {
     return () => clearInterval(interval);
   }, []);
 
-  // Backup automatico ogni 4 ore
+  // Backup automatico agli orari fissi: 04:00, 08:00, 12:00, 16:00, 20:00, 00:00
   React.useEffect(() => {
-    const AUTO_BACKUP_INTERVAL = 4 * 60 * 60 * 1000; // 4 ore in ms
+    const BACKUP_HOURS = [0, 4, 8, 12, 16, 20];
     const AUTO_BACKUP_KEY = 'spesa-last-auto-backup';
 
     const runAutoBackup = async () => {
@@ -215,19 +215,30 @@ function App() {
       localStorage.setItem(AUTO_BACKUP_KEY, Date.now().toString());
     };
 
-    // Controlla se è già passato abbastanza tempo dall'ultimo backup automatico
-    const lastBackup = parseInt(localStorage.getItem(AUTO_BACKUP_KEY) || '0', 10);
-    const now = Date.now();
-    const timeUntilNext = Math.max(0, AUTO_BACKUP_INTERVAL - (now - lastBackup));
+    const scheduleNext = () => {
+      const now = new Date();
+      const currentMinutes = now.getHours() * 60 + now.getMinutes();
 
-    // Esegui al momento giusto, poi ogni 4 ore
-    const timeout = setTimeout(() => {
-      runAutoBackup();
-      const interval = setInterval(runAutoBackup, AUTO_BACKUP_INTERVAL);
-      return () => clearInterval(interval);
-    }, timeUntilNext);
+      // Trova il prossimo slot (in minuti dalla mezzanotte)
+      const nextSlot = BACKUP_HOURS.map(h => h * 60).find(m => m > currentMinutes)
+        ?? (BACKUP_HOURS[0] * 60 + 24 * 60); // domani alle 00:00
 
-    return () => clearTimeout(timeout);
+      const msUntilNext = (nextSlot - currentMinutes) * 60 * 1000 - now.getSeconds() * 1000 - now.getMilliseconds();
+
+      return setTimeout(() => {
+        runAutoBackup();
+        // Dopo il primo scatto, ripianifica il successivo
+        const loop = () => {
+          timeoutRef.current = scheduleNext();
+        };
+        loop();
+      }, msUntilNext);
+    };
+
+    const timeoutRef = { current: null };
+    timeoutRef.current = scheduleNext();
+
+    return () => clearTimeout(timeoutRef.current);
   }, []);
 
   const [isAddModalOpen, React_useState] = React.useState(false);
