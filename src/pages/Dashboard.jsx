@@ -236,7 +236,7 @@ const Dashboard = () => {
                             <p className="font-black text-slate-900 text-sm tracking-tight truncate">{product.name}</p>
                             <span className={`size-2 rounded-full animate-ping shrink-0 ${isToday ? 'bg-red-500' : 'bg-orange-400'}`}></span>
                           </div>
-                          <div className="flex flex-col items-end gap-1 shrink-0">
+                          <div className="flex flex-col items-end justify-between self-stretch gap-1 shrink-0">
                             {isToday ? (
                               <span className="text-[9px] font-black bg-red-500 text-white px-2 py-0.5 rounded-md uppercase tracking-widest">Critico</span>
                             ) : (
@@ -244,7 +244,7 @@ const Dashboard = () => {
                             )}
                             <button
                               onClick={(e) => handleConsumed(e, product)}
-                              className="text-[9px] font-black text-slate-400 border border-slate-200 px-2 py-0.5 rounded-md uppercase tracking-widest active:scale-95 active:bg-slate-50 transition-all"
+                              className="text-[9px] font-black text-sky-600 bg-sky-100 px-2 py-0.5 rounded-md uppercase tracking-widest active:scale-95 active:bg-sky-200 transition-all"
                             >
                               Consumato
                             </button>
