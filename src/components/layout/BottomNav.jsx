@@ -7,11 +7,11 @@ const BottomNav = ({ onAddClick }) => {
 
   const navItems = [
     { icon: 'restaurant', label: 'Cucina', path: '/' },
-    { icon: 'home', label: 'Casa', path: '/household' },
+    { icon: 'inventory_2', label: 'Dispensa', path: '/pantry' },
   ];
 
   const rightItems = [
-    { icon: 'inventory_2', label: 'Dispensa', path: '/pantry' },
+    { icon: 'home', label: 'Casa', path: '/household' },
     { icon: 'storefront', label: 'Negozi', path: '/stores' },
   ];
 
