@@ -138,8 +138,8 @@ const HouseholdInventory = () => {
         >
           {(product, { dragHandleProps }) => {
             const qty = product.quantity ?? 0;
-            const borderColor = qty === 0 ? 'border-l-red-500' : qty === 1 ? 'border-l-orange-500' : 'border-l-primary/30';
-            const dotColor = qty === 0 ? 'bg-red-500' : 'bg-orange-500';
+            const borderColor = qty === 0 ? 'border-l-red-500' : qty === 1 ? 'border-l-orange-300' : 'border-l-primary/30';
+            const dotColor = qty === 0 ? 'bg-red-500' : 'bg-orange-300';
             const barColor = qty === 0 ? 'bg-red-400' : qty === 1 ? 'bg-orange-400' : 'bg-primary';
             return (
             <div

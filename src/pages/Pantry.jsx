@@ -112,7 +112,7 @@ const Pantry = () => {
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-0.5">
                 <p className="text-lg font-black tracking-tight truncate text-orange-800">Da consumare</p>
-                <span className="size-2 bg-orange-500 rounded-full animate-pulse shadow-[0_0_10px_rgba(249,115,22,0.8)]"></span>
+                <span className="size-2 bg-orange-300 rounded-full animate-pulse shadow-[0_0_10px_rgba(249,115,22,0.8)]"></span>
               </div>
               <p className="text-[11px] font-bold uppercase tracking-widest text-orange-500">
                 Scadenze a breve
@@ -169,8 +169,8 @@ const Pantry = () => {
               {(product, { dragHandleProps }) => {
                 const isExpiring = product.expiryDate && isBefore(new Date(product.expiryDate), addDays(new Date(), 3));
                 const qty = product.quantity ?? 0;
-                const borderColor = qty === 0 ? 'border-l-red-500' : qty === 1 ? 'border-l-orange-500' : 'border-l-primary/30';
-                const dotColor = qty === 0 ? 'bg-red-500' : 'bg-orange-500';
+                const borderColor = qty === 0 ? 'border-l-red-500' : qty === 1 ? 'border-l-orange-300' : 'border-l-primary/30';
+                const dotColor = qty === 0 ? 'bg-red-500' : 'bg-orange-300';
                 const showDot = qty <= 1 || isExpiring;
                 return (
                   <div
