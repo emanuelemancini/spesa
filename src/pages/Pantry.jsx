@@ -268,7 +268,7 @@ const Pantry = () => {
           </button>
         </div>
         <div className="grid grid-cols-2 gap-4">
-          {supermarkets.slice(0, 4).map(store => (
+          {supermarkets.map(store => (
             <div 
               key={store.id} 
               onClick={() => navigate(`/stores/${store.id}`)}
@@ -279,7 +279,7 @@ const Pantry = () => {
               </div>
               <p className="font-black text-sm text-slate-900">{store.name}</p>
               <div className="bg-primary/5 text-primary text-[9px] font-black px-3 py-1 rounded-full uppercase">
-                {products.filter(p => p.supermarketId === store.id).length} articoli
+                {products.filter(p => p.supermarketIds?.[0] === store.id || p.supermarketId === store.id).length} articoli
               </div>
             </div>
           ))}
