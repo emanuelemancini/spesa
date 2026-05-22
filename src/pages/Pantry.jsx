@@ -117,7 +117,7 @@ const Pantry = () => {
                 {!showOnlyExpiring && <span className="size-2 bg-orange-300 rounded-full animate-pulse"></span>}
               </div>
               <p className={`text-[11px] font-bold uppercase tracking-widest ${showOnlyExpiring ? 'text-orange-100' : 'text-orange-500'}`}>
-                {showOnlyExpiring ? 'Filtro attivo — tocca per rimuovere' : 'Scadenze a breve'}
+                {showOnlyExpiring ? 'Filtro attivo' : 'Scadenze a breve'}
               </p>
             </div>
             <div className={`text-4xl font-black pr-2 ${showOnlyExpiring ? 'text-white' : 'text-orange-600'}`}>
