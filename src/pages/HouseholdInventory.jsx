@@ -13,17 +13,21 @@ const HouseholdInventory = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = React.useState('');
   const [activeCategory, setActiveCategory] = React.useState('Tutti');
+  const [showOnlyLowStock, setShowOnlyLowStock] = React.useState(false);
   const [expandedCategories, setExpandedCategories] = React.useState({});
   const [isReordering, setIsReordering] = React.useState(false);
 
   const selectedProductId = searchParams.get('productId');
   const selectedProduct = products.find(p => p.id === selectedProductId);
 
+  const lowStockCount = products.filter(p => p.type === 'home' && (p.quantity ?? 0) <= 1).length;
+
   const homeProducts = products.filter(p => {
     const matchesType = p.type === 'home';
     const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = activeCategory === 'Tutti' || p.category === activeCategory;
-    return matchesType && matchesSearch && matchesCategory;
+    const matchesLowStock = !showOnlyLowStock || (p.quantity ?? 0) <= 1;
+    return matchesType && matchesSearch && matchesCategory && matchesLowStock;
   });
 
   const totalItems = homeProducts.reduce((acc, p) => acc + (p.quantity || 0), 0);
@@ -134,6 +138,32 @@ const HouseholdInventory = () => {
         </div>
         <ReorderButton isReordering={isReordering} onToggle={() => setIsReordering(r => !r)} />
       </div>
+
+      {/* In Esaurimento Banner */}
+      {lowStockCount > 0 && (
+        <section className="px-4 mt-2 mb-4">
+          <div
+            onClick={() => { setShowOnlyLowStock(v => !v); setActiveCategory('Tutti'); }}
+            className={`p-4 rounded-[24px] border transition-all cursor-pointer relative overflow-hidden flex items-center gap-4 shadow-sm active:scale-[0.98] ${showOnlyLowStock ? 'bg-orange-500 border-orange-500' : 'bg-orange-50 border-orange-100 hover:border-orange-200'}`}
+          >
+            <div className={`size-14 rounded-2xl flex items-center justify-center shrink-0 ${showOnlyLowStock ? 'bg-orange-400 text-white' : 'bg-orange-100/50 text-orange-500'}`}>
+              <span className="material-symbols-outlined !text-3xl">shopping_bag</span>
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 mb-0.5">
+                <p className={`text-lg font-black tracking-tight truncate ${showOnlyLowStock ? 'text-white' : 'text-orange-800'}`}>In esaurimento</p>
+                {!showOnlyLowStock && <span className="size-2 bg-orange-300 rounded-full animate-pulse"></span>}
+              </div>
+              <p className={`text-[11px] font-bold uppercase tracking-widest ${showOnlyLowStock ? 'text-orange-100' : 'text-orange-500'}`}>
+                {showOnlyLowStock ? 'Filtro attivo' : 'Prodotti quasi esauriti'}
+              </p>
+            </div>
+            <div className={`text-4xl font-black pr-2 ${showOnlyLowStock ? 'text-white' : 'text-orange-600'}`}>
+              {lowStockCount}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Categories Toolbar */}
       <div className="flex gap-2 px-4 py-4 overflow-x-auto no-scrollbar sticky top-0 bg-slate-50/90 backdrop-blur-md z-20 border-b border-slate-100">
