@@ -183,9 +183,22 @@ const useStore = create(
     }),
     {
       name: 'spesa-storage',
-      version: 9,
+      version: 10,
       migrate: (persisted, version) => {
-        // Preserve isAuthenticated across version bumps
+        if (version < 10) {
+          // Rinomina categoria "Igiene Persona" → "Igiene" nei prodotti e nella config
+          const renamed = (persisted.products || []).map(p =>
+            p.category === 'Igiene Persona' ? { ...p, category: 'Igiene' } : p
+          );
+          const homeCats = (persisted.config?.homeCategories || []).map(c =>
+            c === 'Igiene Persona' ? 'Igiene' : c
+          );
+          return {
+            ...persisted,
+            products: renamed,
+            config: { ...persisted.config, homeCategories: homeCats },
+          };
+        }
         return { ...persisted };
       },
       partialize: (state) => ({
