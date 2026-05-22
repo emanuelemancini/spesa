@@ -257,34 +257,6 @@ const Pantry = () => {
         ))}
       </div>
 
-      <section className="px-4 py-8 pb-12">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-black tracking-tight text-[#2d5a27]">I miei Negozi</h2>
-          <button 
-            onClick={() => navigate('/stores')}
-            className="bg-primary/5 text-primary text-[10px] font-black px-3 py-1 rounded-lg uppercase tracking-wider active:scale-95 transition-transform"
-          >
-            Vedi tutti
-          </button>
-        </div>
-        <div className="grid grid-cols-2 gap-4">
-          {supermarkets.map(store => (
-            <div 
-              key={store.id} 
-              onClick={() => navigate(`/stores/${store.id}`)}
-              className="p-4 bg-white rounded-3xl border border-slate-100 shadow-sm flex flex-col items-center gap-3 cursor-pointer active:scale-95 transition-all"
-            >
-              <div className="size-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
-                <span className="material-symbols-outlined">storefront</span>
-              </div>
-              <p className="font-black text-sm text-slate-900">{store.name}</p>
-              <div className="bg-primary/5 text-primary text-[9px] font-black px-3 py-1 rounded-full uppercase">
-                {products.filter(p => p.supermarketIds?.[0] === store.id || p.supermarketId === store.id).length} articoli
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
       
       {/* Search Bar - Floating Glassmorphism */}
       <div className="fixed bottom-[105px] left-0 right-0 z-40 px-4 pointer-events-none">
