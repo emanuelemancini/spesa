@@ -12,6 +12,7 @@ const Pantry = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = React.useState('');
   const [activeCategory, setActiveCategory] = React.useState('Tutti');
+  const [showOnlyExpiring, setShowOnlyExpiring] = React.useState(false);
   const [expandedCategories, setExpandedCategories] = React.useState({});
   const [isReordering, setIsReordering] = React.useState(false);
 
@@ -30,7 +31,8 @@ const Pantry = () => {
     const matchesType = p.type === 'kitchen';
     const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = activeCategory === 'Tutti' || p.category === activeCategory;
-    return matchesType && matchesSearch && matchesCategory;
+    const matchesExpiring = !showOnlyExpiring || (p.expiryDate && isBefore(new Date(p.expiryDate), addDays(new Date(), 3)));
+    return matchesType && matchesSearch && matchesCategory && matchesExpiring;
   });
 
   // For Pantry, we might want to highlight expiring items first
@@ -102,24 +104,23 @@ const Pantry = () => {
       {/* Da Consumare Alert Button */}
       {expiringCount > 0 && (
         <section className="px-4 mt-2 mb-4">
-          <div 
-            className="p-4 rounded-[24px] border border-orange-100 bg-orange-50 transition-all cursor-pointer relative overflow-hidden flex items-center gap-4 shadow-sm hover:border-orange-200 active:scale-[0.98]"
+          <div
+            onClick={() => { setShowOnlyExpiring(v => !v); setActiveCategory('Tutti'); }}
+            className={`p-4 rounded-[24px] border transition-all cursor-pointer relative overflow-hidden flex items-center gap-4 shadow-sm active:scale-[0.98] ${showOnlyExpiring ? 'bg-orange-500 border-orange-500' : 'bg-orange-50 border-orange-100 hover:border-orange-200'}`}
           >
-            <div className="size-14 rounded-2xl flex items-center justify-center shrink-0 bg-orange-100/50 text-orange-500">
-                <span className="material-symbols-rounded !text-3xl">warning</span>
+            <div className={`size-14 rounded-2xl flex items-center justify-center shrink-0 ${showOnlyExpiring ? 'bg-orange-400 text-white' : 'bg-orange-100/50 text-orange-500'}`}>
+              <span className="material-symbols-rounded !text-3xl">warning</span>
             </div>
-            
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-0.5">
-                <p className="text-lg font-black tracking-tight truncate text-orange-800">Da consumare</p>
-                <span className="size-2 bg-orange-300 rounded-full animate-pulse shadow-[0_0_10px_rgba(249,115,22,0.8)]"></span>
+                <p className={`text-lg font-black tracking-tight truncate ${showOnlyExpiring ? 'text-white' : 'text-orange-800'}`}>Da consumare</p>
+                {!showOnlyExpiring && <span className="size-2 bg-orange-300 rounded-full animate-pulse"></span>}
               </div>
-              <p className="text-[11px] font-bold uppercase tracking-widest text-orange-500">
-                Scadenze a breve
+              <p className={`text-[11px] font-bold uppercase tracking-widest ${showOnlyExpiring ? 'text-orange-100' : 'text-orange-500'}`}>
+                {showOnlyExpiring ? 'Filtro attivo — tocca per rimuovere' : 'Scadenze a breve'}
               </p>
             </div>
-
-            <div className="text-4xl font-black pr-2 text-orange-600">
+            <div className={`text-4xl font-black pr-2 ${showOnlyExpiring ? 'text-white' : 'text-orange-600'}`}>
               {expiringCount}
             </div>
           </div>
