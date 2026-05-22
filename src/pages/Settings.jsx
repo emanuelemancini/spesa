@@ -284,7 +284,7 @@ const SettingsPage = () => {
                 <div className="bg-white rounded-[28px] p-5 border border-slate-100 shadow-sm">
                     <div className="flex items-center gap-3 mb-4">
                         <div className="size-10 rounded-2xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
-                            <Palette size={20} />
+                            <span className="material-symbols-outlined !text-[20px]">restaurant</span>
                         </div>
                         <div>
                             <h3 className="text-base font-black text-slate-900">Categorie Cucina</h3>
