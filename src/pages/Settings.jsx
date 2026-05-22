@@ -38,6 +38,7 @@ const SettingsPage = () => {
     const [kitchenCats, setKitchenCats] = useState(config.kitchenCategories);
     const [homeCats, setHomeCats] = useState(config.homeCategories);
     const [newCat, setNewCat] = useState({ kitchen: '', home: '' });
+    const [editingCat, setEditingCat] = useState(null); // { type, oldName, value }
     const [showDataManagement, setShowDataManagement] = useState(false);
     const [confirmAction, setConfirmAction] = useState(null);
 
@@ -143,6 +144,17 @@ const SettingsPage = () => {
         setNewCat({ ...newCat, [type]: '' });
     };
 
+    const handleRenameCat = (type, oldName, newName) => {
+        const trimmed = newName.trim();
+        if (!trimmed || trimmed === oldName) { setEditingCat(null); return; }
+        const target = type === 'kitchen' ? kitchenCats : homeCats;
+        if (target.includes(trimmed)) { setEditingCat(null); return; }
+        const newList = target.map(c => c === oldName ? trimmed : c);
+        if (type === 'kitchen') { setKitchenCats(newList); updateConfig({ kitchenCategories: newList }); }
+        else { setHomeCats(newList); updateConfig({ homeCategories: newList }); }
+        setEditingCat(null);
+    };
+
     const handleRemoveCat = (type, cat) => {
         const target = type === 'kitchen' ? kitchenCats : homeCats;
         const newList = target.filter(c => c !== cat);
@@ -217,12 +229,25 @@ const SettingsPage = () => {
                     
                     <div className="flex flex-wrap gap-2 mb-4">
                         {kitchenCats.map(cat => (
-                            <span key={cat} className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/5 text-primary rounded-xl text-[11px] font-black uppercase tracking-wider group border border-primary/10">
-                                {cat}
-                                <button onClick={() => handleRemoveCat('kitchen', cat)} className="hover:text-red-500 hover:bg-red-50 rounded-full p-0.5 transition-colors">
-                                    <X size={12} />
-                                </button>
-                            </span>
+                            editingCat?.type === 'kitchen' && editingCat?.oldName === cat ? (
+                                <div key={cat} className="flex items-center gap-1 bg-primary/5 border border-primary/30 rounded-xl px-2 py-1">
+                                    <input
+                                        autoFocus
+                                        value={editingCat.value}
+                                        onChange={e => setEditingCat({ ...editingCat, value: e.target.value })}
+                                        onKeyDown={e => { if (e.key === 'Enter') handleRenameCat('kitchen', cat, editingCat.value); if (e.key === 'Escape') setEditingCat(null); }}
+                                        onBlur={() => handleRenameCat('kitchen', cat, editingCat.value)}
+                                        className="text-[11px] font-black uppercase tracking-wider text-primary bg-transparent outline-none w-24"
+                                    />
+                                </div>
+                            ) : (
+                                <span key={cat} onClick={() => setEditingCat({ type: 'kitchen', oldName: cat, value: cat })} className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/5 text-primary rounded-xl text-[11px] font-black uppercase tracking-wider border border-primary/10 cursor-pointer hover:bg-primary/10 transition-colors">
+                                    {cat}
+                                    <button onClick={(e) => { e.stopPropagation(); handleRemoveCat('kitchen', cat); }} className="hover:text-red-500 hover:bg-red-50 rounded-full p-0.5 transition-colors">
+                                        <X size={12} />
+                                    </button>
+                                </span>
+                            )
                         ))}
                     </div>
                     <div className="flex gap-2 relative">
@@ -257,12 +282,25 @@ const SettingsPage = () => {
                     
                     <div className="flex flex-wrap gap-2 mb-4">
                         {homeCats.map(cat => (
-                            <span key={cat} className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 text-blue-600 rounded-xl text-[11px] font-black uppercase tracking-wider group border border-blue-100">
-                                {cat}
-                                <button onClick={() => handleRemoveCat('home', cat)} className="hover:text-red-500 hover:bg-red-50 rounded-full p-0.5 transition-colors">
-                                    <X size={12} />
-                                </button>
-                            </span>
+                            editingCat?.type === 'home' && editingCat?.oldName === cat ? (
+                                <div key={cat} className="flex items-center gap-1 bg-blue-50 border border-blue-300 rounded-xl px-2 py-1">
+                                    <input
+                                        autoFocus
+                                        value={editingCat.value}
+                                        onChange={e => setEditingCat({ ...editingCat, value: e.target.value })}
+                                        onKeyDown={e => { if (e.key === 'Enter') handleRenameCat('home', cat, editingCat.value); if (e.key === 'Escape') setEditingCat(null); }}
+                                        onBlur={() => handleRenameCat('home', cat, editingCat.value)}
+                                        className="text-[11px] font-black uppercase tracking-wider text-blue-600 bg-transparent outline-none w-24"
+                                    />
+                                </div>
+                            ) : (
+                                <span key={cat} onClick={() => setEditingCat({ type: 'home', oldName: cat, value: cat })} className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 text-blue-600 rounded-xl text-[11px] font-black uppercase tracking-wider border border-blue-100 cursor-pointer hover:bg-blue-100 transition-colors">
+                                    {cat}
+                                    <button onClick={(e) => { e.stopPropagation(); handleRemoveCat('home', cat); }} className="hover:text-red-500 hover:bg-red-50 rounded-full p-0.5 transition-colors">
+                                        <X size={12} />
+                                    </button>
+                                </span>
+                            )
                         ))}
                     </div>
                     <div className="flex gap-2 relative">
