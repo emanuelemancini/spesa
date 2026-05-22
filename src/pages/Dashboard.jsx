@@ -6,6 +6,7 @@ import ProductImage from '../components/ui/ProductImage';
 import { formatDistanceToNow, isAfter, isBefore, addDays, format, differenceInDays } from 'date-fns';
 import { it } from 'date-fns/locale';
 import { syncModule } from '../security/sync';
+import SupermarketLogo from '../components/ui/SupermarketLogo';
 
 const Dashboard = () => {
   const { products, supermarkets, mergeState, setIsUnsynced, isUnsynced, showToast, updateProduct } = useStore();
@@ -520,9 +521,7 @@ const Dashboard = () => {
                     onClick={() => navigate(`/stores/${store.id}`)}
                     className="w-full px-4 py-3 bg-white rounded-2xl border border-slate-100 shadow-sm flex items-center gap-3 cursor-pointer active:scale-[0.98] transition-all"
                   >
-                    <div className="size-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
-                      <span className="material-symbols-outlined !text-xl">storefront</span>
-                    </div>
+                    <SupermarketLogo name={store.name} className="size-10 shrink-0" />
                     <p className="flex-1 font-black text-slate-900 text-sm tracking-tight truncate">{store.name}</p>
                     <span className="text-[10px] font-black text-slate-500 bg-slate-100 px-3 py-1 rounded-full whitespace-nowrap">
                       {count} {count === 1 ? 'articolo' : 'articoli'}
