@@ -69,7 +69,11 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
   if (!isOpen || !product) return null;
 
   const handleOpen = () => openProduct(product.id, product.suggestedConsumptionDays || 3);
-  const handleUndoOpen = () => updateProduct(product.id, { status: 'bought', openedDate: null });
+  const handleUndoOpen = () => {
+    if (window.confirm('Annullare l\'apertura di questo prodotto?')) {
+      updateProduct(product.id, { status: 'bought', openedDate: null });
+    }
+  };
   const handleFinish = () => {
     updateProduct(product.id, { quantity: 0, openedDate: null, expiryDate: null });
     onClose();
