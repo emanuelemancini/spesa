@@ -8,7 +8,7 @@ import { it } from 'date-fns/locale';
 import { syncModule } from '../security/sync';
 
 const Dashboard = () => {
-  const { products, supermarkets, mergeState, setIsUnsynced, isUnsynced, showToast } = useStore();
+  const { products, supermarkets, mergeState, setIsUnsynced, isUnsynced, showToast, updateProduct } = useStore();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = React.useState('');
@@ -17,6 +17,37 @@ const Dashboard = () => {
   const [expandOpened, setExpandOpened] = React.useState(false);
   const [syncing, setSyncing] = React.useState(false);
   const scrollContainerRef = React.useRef(null);
+
+  // Modal "prodotto consumato"
+  const [consumedModal, setConsumedModal] = React.useState(null); // { product, newExpiryDate, openNow }
+
+  const handleConsumed = (e, product) => {
+    e.stopPropagation();
+    const newQty = (product.quantity || 1) - 1;
+    if (newQty <= 0) {
+      // Ultimo pezzo: segna come esaurito, rimuovi dalla dash
+      updateProduct(product.id, { quantity: 0, expiryDate: null, openedDate: null, status: 'bought' });
+      showToast(`${product.name} terminato!`, 'success');
+    } else {
+      // Rimangono altri pezzi: apri il modal per aggiornare
+      updateProduct(product.id, { quantity: newQty });
+      setConsumedModal({
+        product: { ...product, quantity: newQty },
+        newExpiryDate: product.expiryDate ? product.expiryDate.split('T')[0] : '',
+        openNow: false,
+      });
+    }
+  };
+
+  const handleConsumedConfirm = () => {
+    const { product, newExpiryDate, openNow } = consumedModal;
+    updateProduct(product.id, {
+      expiryDate: newExpiryDate ? new Date(newExpiryDate).toISOString() : product.expiryDate,
+      ...(openNow ? { status: 'opened', openedDate: new Date().toISOString() } : { status: 'bought', openedDate: null }),
+    });
+    setConsumedModal(null);
+    showToast('Prodotto aggiornato!', 'success');
+  };
 
   const handleSync = async () => {
     setSyncing(true);
@@ -240,6 +271,16 @@ const Dashboard = () => {
                           })()}
                         </div>
                       </div>
+                    </div>
+                    {/* Pulsante Consumato */}
+                    <div className="mt-3 flex" onClick={e => e.stopPropagation()}>
+                      <button
+                        onClick={(e) => handleConsumed(e, product)}
+                        className="flex-1 h-9 rounded-xl bg-slate-50 border border-slate-200 text-slate-500 text-[11px] font-black uppercase tracking-widest flex items-center justify-center gap-1.5 active:scale-95 active:bg-slate-100 transition-all"
+                      >
+                        <span className="material-symbols-outlined !text-base">check</span>
+                        Ho consumato questo prodotto
+                      </button>
                     </div>
                   </div>
                 );
@@ -559,15 +600,90 @@ const Dashboard = () => {
         </section>
       )}
 
-      <ProductDetailModal 
-        product={selectedProduct} 
-        isOpen={!!selectedProduct} 
+      <ProductDetailModal
+        product={selectedProduct}
+        isOpen={!!selectedProduct}
         onClose={() => {
           if (searchParams.has('productId')) {
             navigate(-1);
           }
-        }} 
+        }}
       />
+
+      {/* Modal prodotti rimanenti dopo consumo */}
+      {consumedModal && (
+        <div className="fixed inset-0 z-[150] flex items-end justify-center px-4 pb-8" onClick={() => setConsumedModal(null)}>
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
+          <div className="relative w-full max-w-sm bg-white rounded-[32px] shadow-2xl p-6 animate-fade-in-up" onClick={e => e.stopPropagation()}>
+
+            {/* Header */}
+            <div className="flex items-center gap-3 mb-5">
+              <div className="size-12 rounded-2xl bg-primary/10 flex items-center justify-center">
+                <span className="material-symbols-outlined !text-2xl text-primary">inventory_2</span>
+              </div>
+              <div>
+                <h3 className="text-base font-black text-slate-900 tracking-tight">{consumedModal.product.name}</h3>
+                <p className="text-[11px] font-bold text-primary uppercase tracking-widest">
+                  {consumedModal.product.quantity} {consumedModal.product.quantity === 1 ? 'confezione rimasta' : 'confezioni rimaste'}
+                </p>
+              </div>
+            </div>
+
+            <div className="space-y-4 mb-6">
+              {/* Scadenza */}
+              <div className="bg-slate-50 rounded-2xl p-4">
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Scadenza del prodotto rimasto</p>
+                <div className="flex items-center gap-2">
+                  <span className="material-symbols-outlined !text-base text-slate-400">calendar_month</span>
+                  <input
+                    type="date"
+                    value={consumedModal.newExpiryDate}
+                    onChange={e => setConsumedModal(prev => ({ ...prev, newExpiryDate: e.target.value }))}
+                    className="flex-1 text-sm font-black text-slate-900 bg-transparent outline-none"
+                  />
+                </div>
+              </div>
+
+              {/* Stato */}
+              <div className="bg-slate-50 rounded-2xl p-4">
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Il prodotto rimasto è…</p>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    onClick={() => setConsumedModal(prev => ({ ...prev, openNow: false }))}
+                    className={`flex flex-col items-center gap-1.5 p-3 rounded-xl border-2 transition-all ${!consumedModal.openNow ? 'border-primary bg-primary/5 text-primary' : 'border-slate-200 text-slate-400'}`}
+                  >
+                    <span className="material-symbols-outlined !text-xl">package_2</span>
+                    <span className="text-[10px] font-black uppercase tracking-tight">Ancora chiuso</span>
+                  </button>
+                  <button
+                    onClick={() => setConsumedModal(prev => ({ ...prev, openNow: true }))}
+                    className={`flex flex-col items-center gap-1.5 p-3 rounded-xl border-2 transition-all ${consumedModal.openNow ? 'border-primary bg-primary/5 text-primary' : 'border-slate-200 text-slate-400'}`}
+                  >
+                    <span className="material-symbols-outlined !text-xl">restaurant</span>
+                    <span className="text-[10px] font-black uppercase tracking-tight">Lo apro ora</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Azioni */}
+            <div className="flex gap-3">
+              <button
+                onClick={() => setConsumedModal(null)}
+                className="flex-1 h-12 rounded-2xl bg-slate-100 text-slate-600 text-sm font-black uppercase tracking-widest active:scale-95 transition-all"
+              >
+                Annulla
+              </button>
+              <button
+                onClick={handleConsumedConfirm}
+                className="flex-1 h-12 rounded-2xl bg-primary text-white text-sm font-black uppercase tracking-widest shadow-lg shadow-primary/25 active:scale-95 transition-all"
+              >
+                Conferma
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
