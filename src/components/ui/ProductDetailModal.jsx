@@ -701,7 +701,10 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
                   </div>
                   <p className="text-slate-500 text-[10px] font-bold mt-4 flex items-center justify-between">
                     <span>Da consumare in {product.suggestedConsumptionDays || 3} gg</span>
-                    {isOpened && <span className="text-primary italic">Aperto {formatDistanceToNow(new Date(product.openedDate), { locale: it, addSuffix: true })}</span>}
+                    {isOpened && (() => {
+                      const days = differenceInDays(new Date(), new Date(product.openedDate));
+                      return <span className="text-primary italic">Aperto {days === 0 ? 'oggi' : `${days} giorn${days === 1 ? 'o' : 'i'} fa`}</span>;
+                    })()}
                   </p>
                 </div>
               )}

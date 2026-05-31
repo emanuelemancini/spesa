@@ -364,10 +364,9 @@ const Dashboard = () => {
                       )}
                       <button
                         onClick={(e) => handleConsumed(e, product)}
-                        className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-sky-50 text-sky-500 border border-sky-100 active:scale-95 transition-all"
+                        className="text-[9px] font-black text-sky-600 bg-sky-100 px-2 py-0.5 rounded-md uppercase tracking-widest active:scale-95 active:bg-sky-200 transition-all"
                       >
-                        <span className="material-symbols-outlined !text-[11px]">check_circle</span>
-                        <span className="text-[9px] font-black uppercase tracking-widest">Consumato</span>
+                        Consumato
                       </button>
                     </div>
                   </div>
