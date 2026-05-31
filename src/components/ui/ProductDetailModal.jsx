@@ -775,9 +775,23 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
                      <span className="material-symbols-outlined text-slate-300">event_note</span>
                      <span className="text-[10px] uppercase tracking-widest">Scade il</span>
                    </div>
-                   <span className={`text-xs ${isExpired ? 'text-red-500' : 'text-slate-900'}`}>
-                     {product.expiryDate ? format(new Date(product.expiryDate), 'dd MMM yyyy', { locale: it }) : 'N/D'}
-                   </span>
+                   {product.expiryDate ? (
+                     <span className={`text-xs ${isExpired ? 'text-red-500' : 'text-slate-900'}`}>
+                       {format(new Date(product.expiryDate), 'dd MMM yyyy', { locale: it })}
+                     </span>
+                   ) : (
+                     <label className="flex items-center gap-1 text-xs text-primary cursor-pointer active:scale-95 transition-all">
+                       <span className="material-symbols-outlined !text-base">add_circle</span>
+                       Imposta
+                       <input
+                         type="date"
+                         className="sr-only"
+                         onChange={(e) => {
+                           if (e.target.value) updateProduct(product.id, { expiryDate: new Date(e.target.value).toISOString() });
+                         }}
+                       />
+                     </label>
+                   )}
                 </div>
                 <div className="flex items-center justify-between py-3 border-b border-slate-100 font-black text-slate-500">
                    <div className="flex items-center gap-3">

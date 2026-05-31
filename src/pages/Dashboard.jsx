@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import useStore from '../store/useStore';
 import ProductDetailModal from '../components/ui/ProductDetailModal';
 import ProductImage from '../components/ui/ProductImage';
-import { formatDistanceToNow, isAfter, isBefore, addDays, format, differenceInDays } from 'date-fns';
+import { formatDistanceToNow, isAfter, isBefore, addDays, format, differenceInDays, isToday as isTodayFn } from 'date-fns';
 import { it } from 'date-fns/locale';
 import { syncModule } from '../security/sync';
 import SupermarketLogo from '../components/ui/SupermarketLogo';
@@ -221,7 +221,8 @@ const Dashboard = () => {
             
             <div className="grid gap-4">
               {expiringSoon.slice(0, expandExpiring ? undefined : 3).map((product) => {
-                const isToday = isBefore(new Date(product.expiryDate), addDays(new Date(), 1));
+                const expiry = new Date(product.expiryDate);
+                const isToday = isTodayFn(expiry) || isBefore(expiry, new Date());
                 return (
                   <div
                     key={product.id}
