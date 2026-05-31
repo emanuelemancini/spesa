@@ -112,7 +112,7 @@ export default function DataManagement() {
         const file = e.target.files?.[0]
         if (!file) return
         const reader = new FileReader()
-        reader.onload = (ev) => {
+        reader.onload = async (ev) => {
             try {
                 const json = JSON.parse(ev.target.result)
                 // Supporta sia il formato Aruba { data: "...", lastUpdated: ... }
@@ -127,7 +127,10 @@ export default function DataManagement() {
                     state = json.state
                 }
                 if (state && (state.products || state.supermarkets)) {
-                    replaceState(state)
+                    replaceState(state, { markUnsynced: true })
+                    const s = useStore.getState()
+                    const ok = await syncModule.pushToCloud({ products: s.products, supermarkets: s.supermarkets, user: s.user, config: s.config, readNotificationIds: s.readNotificationIds })
+                    if (ok) { s.setLastPushedAt(Date.now()); s.setIsUnsynced(false) }
                     showToast('Importazione completata!', 'success')
                     setTimeout(() => navigate('/'), 800)
                 } else {
@@ -144,7 +147,20 @@ export default function DataManagement() {
     const handleRestore = async (backup) => {
         const state = await syncModule.restoreBackup(backup.filename)
         if (state) {
-            replaceState(state)
+            replaceState(state, { markUnsynced: true })
+            // Push immediato al cloud così il refresh non sovrascrive
+            const s = useStore.getState()
+            const success = await syncModule.pushToCloud({
+                products: s.products,
+                supermarkets: s.supermarkets,
+                user: s.user,
+                config: s.config,
+                readNotificationIds: s.readNotificationIds,
+            })
+            if (success) {
+                s.setLastPushedAt(Date.now())
+                s.setIsUnsynced(false)
+            }
             showToast('Ripristino completato!', 'success')
             setTimeout(() => navigate('/'), 500)
         } else {

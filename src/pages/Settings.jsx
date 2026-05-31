@@ -216,8 +216,10 @@ const SettingsPage = () => {
                 await Promise.all(regs.map(r => r.unregister()));
             }
         } catch {}
-        // 3. Ricarica — il browser scarica tutto da zero
-        window.location.reload(true);
+        // 3. Breve attesa per assicurarsi che SW sia deregistrato, poi ricarica
+        setTimeout(() => {
+            window.location.href = window.location.href.split('?')[0] + '?v=' + Date.now();
+        }, 500);
     };
 
     const handleRemoveCat = (type, cat) => {

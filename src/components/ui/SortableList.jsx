@@ -62,7 +62,7 @@ export function SortableList({ items, onReorder, isReordering, className = 'grid
   };
 
   if (!isReordering) {
-    return <div className={className}>{items.map(item => children(item, { dragHandleProps: null, isDragging: false }))}</div>;
+    return <div className={className}>{items.map(item => <React.Fragment key={item.id}>{children(item, { dragHandleProps: null, isDragging: false })}</React.Fragment>)}</div>;
   }
 
   return (

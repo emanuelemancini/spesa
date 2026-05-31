@@ -155,7 +155,8 @@ function App() {
       if (current.isUnsynced) return;
 
       const cloudTime = cloud.lastUpdated || 0;
-      if (cloudTime > current.lastPushedAt) {
+      const justPushed = (Date.now() - current.lastPushedAt) < 60000;
+      if (cloudTime > current.lastPushedAt && !justPushed) {
         replaceState(cloud.state);
         setIsUnsynced(false);
       }
@@ -181,6 +182,70 @@ function App() {
     });
   }, []); // Only run once on mount
 
+  // Auto-push: ogni volta che ci sono modifiche locali, le carica sul cloud dopo 3 secondi
+  React.useEffect(() => {
+    let pushTimer = null;
+    const BACKUP_INTERVAL = 10 * 60 * 1000; // 10 minuti
+    let firstBackupDone = false;   // backup creato al primo push della sessione
+    let changedSinceBackup = false; // ci sono state modifiche dall'ultimo backup
+    let backupTimer = null;
+
+    const doBackup = async () => {
+      const s = useStore.getState();
+      s.setIsBackingUp(true);
+      const ok = await syncModule.createManualBackup({
+        products: s.products,
+        supermarkets: s.supermarkets,
+        user: s.user,
+        config: s.config,
+        readNotificationIds: s.readNotificationIds,
+      });
+      if (ok) changedSinceBackup = false;
+      // Mantieni l'azzurro visibile almeno ~2.5s come feedback visivo
+      setTimeout(() => useStore.getState().setIsBackingUp(false), 2500);
+    };
+
+    // Ciclo: ogni 10 minuti, se ci sono state modifiche fa il backup, altrimenti aspetta ancora
+    const startBackupCycle = () => {
+      if (backupTimer) return;
+      backupTimer = setInterval(() => {
+        if (changedSinceBackup) doBackup();
+      }, BACKUP_INTERVAL);
+    };
+
+    const unsub = useStore.subscribe(async (state, prev) => {
+      if (!state.isUnsynced || state.isUnsynced === prev?.isUnsynced) return;
+      clearTimeout(pushTimer);
+      pushTimer = setTimeout(async () => {
+        const current = useStore.getState();
+        if (!current.isUnsynced) return;
+        const success = await syncModule.pushToCloud({
+          products: current.products,
+          supermarkets: current.supermarkets,
+          user: current.user,
+          config: current.config,
+          readNotificationIds: current.readNotificationIds,
+        });
+        if (success) {
+          current.setLastPushedAt(Date.now());
+          current.setIsUnsynced(false);
+
+          // --- Backup agganciato al push ---
+          if (!firstBackupDone) {
+            // Primo push della sessione: backup immediato + avvia ciclo da 10 min
+            firstBackupDone = true;
+            await doBackup();
+            startBackupCycle();
+          } else {
+            // Push successivi: segna che ci sono modifiche da salvare al prossimo ciclo
+            changedSinceBackup = true;
+          }
+        }
+      }, 3000);
+    });
+    return () => { unsub(); clearTimeout(pushTimer); clearInterval(backupTimer); };
+  }, []);
+
   // Pull periodico ogni 30 secondi — aggiorna se cloud è più recente e non ci sono modifiche locali
   React.useEffect(() => {
     const interval = setInterval(async () => {
@@ -196,49 +261,6 @@ function App() {
       }
     }, 30000);
     return () => clearInterval(interval);
-  }, []);
-
-  // Backup automatico agli orari fissi: 04:00, 08:00, 12:00, 16:00, 20:00, 00:00
-  React.useEffect(() => {
-    const BACKUP_HOURS = [0, 4, 8, 12, 16, 20];
-    const AUTO_BACKUP_KEY = 'spesa-last-auto-backup';
-
-    const runAutoBackup = async () => {
-      const s = useStore.getState();
-      await syncModule.createManualBackup({
-        products: s.products,
-        supermarkets: s.supermarkets,
-        user: s.user,
-        config: s.config,
-        readNotificationIds: s.readNotificationIds,
-      });
-      localStorage.setItem(AUTO_BACKUP_KEY, Date.now().toString());
-    };
-
-    const scheduleNext = () => {
-      const now = new Date();
-      const currentMinutes = now.getHours() * 60 + now.getMinutes();
-
-      // Trova il prossimo slot (in minuti dalla mezzanotte)
-      const nextSlot = BACKUP_HOURS.map(h => h * 60).find(m => m > currentMinutes)
-        ?? (BACKUP_HOURS[0] * 60 + 24 * 60); // domani alle 00:00
-
-      const msUntilNext = (nextSlot - currentMinutes) * 60 * 1000 - now.getSeconds() * 1000 - now.getMilliseconds();
-
-      return setTimeout(() => {
-        runAutoBackup();
-        // Dopo il primo scatto, ripianifica il successivo
-        const loop = () => {
-          timeoutRef.current = scheduleNext();
-        };
-        loop();
-      }, msUntilNext);
-    };
-
-    const timeoutRef = { current: null };
-    timeoutRef.current = scheduleNext();
-
-    return () => clearTimeout(timeoutRef.current);
   }, []);
 
   const [isAddModalOpen, React_useState] = React.useState(false);

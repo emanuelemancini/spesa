@@ -260,6 +260,7 @@ const ShoppingSummary = () => {
                               <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest bg-slate-100 px-2 py-0.5 rounded-md">{product.category}</span>
                             )}
                           </div>
+                          <p className="text-[10px] font-bold text-slate-400 mt-1">Quantità: {product.quantity ?? 0}</p>
                         </div>
                         <button
                           onClick={() => handleAddSuggestion(product)}

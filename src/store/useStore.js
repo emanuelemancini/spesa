@@ -13,6 +13,7 @@ const useStore = create(
       },
       isAuthenticated: false,
       isUnsynced: false,
+      isBackingUp: false,
       lastPushedAt: 0,
       toast: null, // { message, type, id }
       config: {
@@ -42,6 +43,7 @@ const useStore = create(
 
       // Sync Actions
       setIsUnsynced: (val) => set({ isUnsynced: val }),
+      setIsBackingUp: (val) => set({ isBackingUp: val }),
       setLastPushedAt: (t) => set({ lastPushedAt: t }),
 
       showToast: (message, type = 'success') => {
@@ -63,7 +65,7 @@ const useStore = create(
         }
       }),
 
-      replaceState: (incoming) => {
+      replaceState: (incoming, { markUnsynced = false } = {}) => {
         // Normalizza categorie anche sui dati in arrivo dal cloud
         const products = (incoming.products || []).map(p =>
           p.category === 'Igiene Persona' ? { ...p, category: 'Igiene' } : p
@@ -77,6 +79,7 @@ const useStore = create(
           user: incoming.user || useStore.getState().user,
           readNotificationIds: incoming.readNotificationIds || useStore.getState().readNotificationIds,
           ...(incoming.config ? { config: { ...incoming.config, homeCategories: homeCats } } : {}),
+          ...(markUnsynced ? { isUnsynced: true } : {}),
         });
       },
 

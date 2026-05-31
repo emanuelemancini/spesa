@@ -5,7 +5,7 @@ import { it } from 'date-fns/locale';
 import ProductImage from './ProductImage';
 import useStore from '../../store/useStore';
 
-const ConfirmDialog = ({ isOpen, title, message, onConfirm, onCancel, confirmLabel = 'Conferma', confirmColor = 'bg-red-500' }) => {
+const ConfirmDialog = ({ isOpen, title, message, onConfirm, onCancel, confirmLabel = 'Conferma', confirmColor = 'bg-red-500', icon = 'undo', iconBg = 'bg-red-50', iconColor = 'text-red-500' }) => {
   if (!isOpen) return null;
   return (
     <div className="fixed inset-0 z-[200] flex items-end justify-center px-4 pb-8" onClick={onCancel}>
@@ -15,8 +15,8 @@ const ConfirmDialog = ({ isOpen, title, message, onConfirm, onCancel, confirmLab
         onClick={e => e.stopPropagation()}
       >
         <div className="flex flex-col items-center text-center gap-3 mb-6">
-          <div className="size-14 rounded-full bg-red-50 flex items-center justify-center">
-            <span className="material-symbols-outlined !text-3xl text-red-500">undo</span>
+          <div className={`size-14 rounded-full ${iconBg} flex items-center justify-center`}>
+            <span className={`material-symbols-outlined !text-3xl ${iconColor}`}>{icon}</span>
           </div>
           <h3 className="text-lg font-black text-slate-900 tracking-tight">{title}</h3>
           {message && <p className="text-sm text-slate-400 font-medium leading-snug">{message}</p>}
@@ -147,22 +147,22 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
   };
 
   const handleDuplicate = () => {
-    if (confirm(`Vuoi duplicare "${product.name}"?`)) {
-      const { id, ...rest } = product;
-      const newId = Date.now().toString();
-      const newProduct = { ...rest, id: newId, name: `${rest.name} (Copia)` };
-      addProduct(newProduct);
-      
-      // Trigger sliding transition effect
-      setIsDuplicating(true);
-      setTimeout(() => {
-        // We find the new product in the store to "refresh" the view
-        // Since we can't change the prop directly, we'll suggest the parent logic
-        // For now, we update the local view if the store was updated
-        onClose(); // In a real app, we'd navigate to the new ID
-        alert("Prodotto duplicato! Lo troverai nella lista.");
-      }, 300);
-    }
+    setConfirmDialog({
+      title: `Duplica "${product.name}"?`,
+      message: 'Verrà creata una copia identica del prodotto.',
+      confirmLabel: 'Duplica',
+      confirmColor: 'bg-purple-500',
+      icon: 'content_copy',
+      iconBg: 'bg-purple-50',
+      iconColor: 'text-purple-500',
+      onConfirm: () => {
+        const { id, ...rest } = product;
+        const newId = Date.now().toString();
+        addProduct({ ...rest, id: newId, name: `${rest.name} (Copia)` });
+        setConfirmDialog(null);
+        onClose();
+      },
+    });
   };
 
   const isExpired = product.expiryDate && new Date(product.expiryDate) < new Date();
@@ -546,6 +546,16 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
             <div className="space-y-4 mb-8">
               <div className="flex flex-col gap-4">
                 <div className="w-full">
+                  <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Nome</label>
+                  <input
+                    type="text"
+                    value={editedData.name || ''}
+                    onChange={e => setEditedData({ ...editedData, name: e.target.value })}
+                    className="w-full h-12 px-3 rounded-xl bg-slate-50 border-none focus:ring-2 focus:ring-primary font-bold text-sm outline-none"
+                    placeholder="Nome prodotto..."
+                  />
+                </div>
+                <div className="w-full">
                   <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Categoria</label>
                   <select value={editedData.type} onChange={(e) => setEditedData({...editedData, type: e.target.value})} className="w-full h-12 px-3 rounded-xl bg-slate-50 border-none focus:ring-2 focus:ring-primary font-bold text-sm">
                     <option value="kitchen">Cucina</option>
@@ -742,7 +752,13 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
                   </button>
 
                   <button
-                    onClick={() => { if(confirm(`Eliminare definitivamente "${product.name}"?`)) { deleteProduct(product.id); onClose(); } }}
+                    onClick={() => setConfirmDialog({
+                      title: 'Elimina prodotto?',
+                      message: `"${product.name}" verrà eliminato definitivamente.`,
+                      confirmLabel: 'Elimina',
+                      confirmColor: 'bg-red-500',
+                      onConfirm: () => { deleteProduct(product.id); onClose(); },
+                    })}
                     className="flex items-center justify-center gap-3 p-4 rounded-3xl bg-red-50 border-2 border-red-100 text-red-600 active:scale-95 transition-all"
                   >
                     <div className="size-9 rounded-2xl bg-red-100 text-red-600 flex items-center justify-center shrink-0">
@@ -791,7 +807,11 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
         message={confirmDialog?.message}
         onConfirm={confirmDialog?.onConfirm}
         onCancel={() => setConfirmDialog(null)}
-        confirmLabel="Sì, annulla"
+        confirmLabel={confirmDialog?.confirmLabel || 'Conferma'}
+        confirmColor={confirmDialog?.confirmColor || 'bg-red-500'}
+        icon={confirmDialog?.icon || 'undo'}
+        iconBg={confirmDialog?.iconBg || 'bg-red-50'}
+        iconColor={confirmDialog?.iconColor || 'text-red-500'}
       />
     </>
   );

@@ -4,7 +4,7 @@ import useStore from '../../store/useStore';
 import { syncModule } from '../../security/sync';
 
 const Header = () => {
-  const { user, products, readNotificationIds, isUnsynced, setIsUnsynced, setLastPushedAt, showToast, replaceState } = useStore();
+  const { user, products, readNotificationIds, isUnsynced, isBackingUp, setIsUnsynced, setLastPushedAt, showToast, replaceState } = useStore();
   const navigate = useNavigate();
   const [syncing, setSyncing] = React.useState(false);
 
@@ -57,19 +57,21 @@ const Header = () => {
         </div>
 
         <div className="flex gap-2">
-          <button
-            onClick={handleSync}
-            disabled={syncing}
-            className={`size-10 rounded-full border flex items-center justify-center active:scale-90 transition-all ${
-              syncing
-                ? 'bg-white border-slate-200 text-slate-400'
-                : isUnsynced
-                  ? 'bg-red-50 border-red-200 text-red-500'
-                  : 'bg-white border-slate-200 text-slate-600'
+          <div
+            className={`size-10 rounded-full border flex items-center justify-center transition-all ${
+              isBackingUp
+                ? 'bg-sky-50 border-sky-200 text-sky-500'
+                : syncing
+                  ? 'bg-white border-slate-200 text-slate-400'
+                  : isUnsynced
+                    ? 'bg-red-50 border-red-200 text-red-500'
+                    : 'bg-white border-slate-200 text-slate-600'
             }`}
           >
-            <span className={`material-symbols-outlined text-[22px] ${syncing ? 'animate-spin' : ''}`}>sync</span>
-          </button>
+            <span className={`material-symbols-outlined text-[22px] ${(syncing || isBackingUp) ? 'animate-spin' : ''}`}>
+              {isBackingUp ? 'cloud_upload' : 'sync'}
+            </span>
+          </div>
           <button
             onClick={() => navigate('/notifications')}
             className="size-10 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-600 relative active:scale-90 transition-transform"

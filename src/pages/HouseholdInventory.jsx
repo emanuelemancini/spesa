@@ -213,7 +213,7 @@ const HouseholdInventory = () => {
                 >
                   {expandedCategories[category]
                     ? 'Mostra meno'
-                    : `Vedi altri ${items.length - PREVIEW_COUNT} prodotti`}
+                    : items.length - PREVIEW_COUNT === 1 ? 'Vedi 1 altro prodotto' : `Vedi altri ${items.length - PREVIEW_COUNT} prodotti`}
                 </button>
               )}
             </section>

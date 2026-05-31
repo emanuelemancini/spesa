@@ -200,7 +200,7 @@ const Dashboard = () => {
                   )}
                 </div>
                 <p className={`text-[11px] font-bold uppercase tracking-widest ${activeFilter === 'critico' ? 'text-white/80' : 'text-red-500'}`}>
-                  {products.filter(p => p.expiryDate && isBefore(new Date(p.expiryDate), new Date())).length > 0 ? 'Da buttare subito' : 'Tutto ok'}
+                  {products.filter(p => p.expiryDate && isBefore(new Date(p.expiryDate), new Date())).length > 0 ? 'Da mangiare subito' : 'Tutto ok'}
                 </p>
               </div>
 
@@ -352,6 +352,22 @@ const Dashboard = () => {
                           </p>
                         </div>
                       </div>
+                    </div>
+                    <div className="flex flex-col items-end justify-between gap-2 shrink-0 min-h-[64px]" onClick={e => e.stopPropagation()}>
+                      {product.expiryDate ? (
+                        <span className={`text-[9px] font-black uppercase tracking-widest px-2 py-1 rounded-lg ${isBefore(new Date(product.expiryDate), new Date()) ? 'bg-red-50 text-red-500' : isBefore(new Date(product.expiryDate), addDays(new Date(), 3)) ? 'bg-orange-50 text-orange-500' : 'bg-slate-50 text-slate-400'}`}>
+                          {format(new Date(product.expiryDate), 'dd MMM', { locale: it })}
+                        </span>
+                      ) : (
+                        <span className="text-[9px] font-black uppercase tracking-widest px-2 py-1 rounded-lg bg-slate-50 text-slate-300">N/D</span>
+                      )}
+                      <button
+                        onClick={(e) => handleConsumed(e, product)}
+                        className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-sky-50 text-sky-500 border border-sky-100 active:scale-95 transition-all"
+                      >
+                        <span className="material-symbols-outlined !text-[11px]">check_circle</span>
+                        <span className="text-[9px] font-black uppercase tracking-widest">Consumato</span>
+                      </button>
                     </div>
                   </div>
                 </div>

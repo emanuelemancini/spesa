@@ -253,7 +253,7 @@ const Pantry = () => {
                 ) : (
                   <>
                     <span className="material-symbols-outlined !text-base">expand_more</span>
-                    Vedi altri {items.length - PREVIEW_COUNT} prodotti
+                    {items.length - PREVIEW_COUNT === 1 ? 'Vedi 1 altro prodotto' : `Vedi altri ${items.length - PREVIEW_COUNT} prodotti`}
                   </>
                 )}
               </button>

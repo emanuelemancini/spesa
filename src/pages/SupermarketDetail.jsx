@@ -148,12 +148,87 @@ function ProductRow({ product, onOpen, onToggleBought, dragHandleProps, isReorde
   );
 }
 
+// ── OSM hours sync ───────────────────────────────────────────────────────────
+
+const OSM_DAY_MAP = { Mo: 'mon', Tu: 'tue', We: 'wed', Th: 'thu', Fr: 'fri', Sa: 'sat', Su: 'sun' };
+const OSM_DAY_ORDER = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
+
+function expandOsmDayRange(range) {
+  // e.g. "Mo-Fr" -> ['mon','tue','wed','thu','fri'], "Sa" -> ['sat']
+  if (range.includes('-')) {
+    const [start, end] = range.split('-');
+    const si = OSM_DAY_ORDER.indexOf(start);
+    const ei = OSM_DAY_ORDER.indexOf(end);
+    if (si === -1 || ei === -1) return [];
+    return OSM_DAY_ORDER.slice(si, ei + 1).map(d => OSM_DAY_MAP[d]);
+  }
+  return OSM_DAY_MAP[range] ? [OSM_DAY_MAP[range]] : [];
+}
+
+function parseOsmOpeningHours(str) {
+  // e.g. "Mo-Fr 08:00-21:00; Sa 08:00-20:00; Su 09:00-20:00"
+  const result = {};
+  const segments = str.split(';').map(s => s.trim()).filter(Boolean);
+  for (const seg of segments) {
+    // Match: [day spec] [time range] or [time range] (applies to all)
+    const m = seg.match(/^([A-Za-z,\-]+)\s+(\d{2}:\d{2})-(\d{2}:\d{2})$/);
+    if (!m) continue;
+    const [, daySpec, open, close] = m;
+    // Handle comma-separated day specs: "Mo-Fr,Su"
+    const dayParts = daySpec.split(',');
+    for (const part of dayParts) {
+      const days = expandOsmDayRange(part.trim());
+      for (const day of days) {
+        result[day] = { open, close };
+      }
+    }
+  }
+  return result;
+}
+
+async function fetchOsmHours(storeName) {
+  // Cerca a Roma e provincia (raggio 40 km dal centro di Roma), senza filtro opening_hours
+  const query = `[out:json][timeout:15];(node["name"~"${storeName}",i]["shop"](around:40000,41.9028,12.4964);way["name"~"${storeName}",i]["shop"](around:40000,41.9028,12.4964););out 10;`;
+  const url = `https://overpass.kumi.systems/api/interpreter?data=${encodeURIComponent(query)}`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`Overpass API error: ${res.status}`);
+  const data = await res.json();
+
+  if (!data.elements?.length) throw new Error('Negozio non trovato su OpenStreetMap');
+
+  // Cerca prima un elemento con opening_hours
+  const el = data.elements.find(e => e.tags?.opening_hours) || null;
+  if (!el) throw new Error(`Negozio trovato (${data.elements.length} risultati) ma nessun orario disponibile su OpenStreetMap`);
+
+  const parsed = parseOsmOpeningHours(el.tags.opening_hours);
+  if (Object.keys(parsed).length === 0) throw new Error(`Formato orari non supportato: "${el.tags.opening_hours}"`);
+  return { hours: parsed, raw: el.tags.opening_hours };
+}
+
 // ── Hours editor ─────────────────────────────────────────────────────────────
 
-function HoursEditor({ hours, onChange }) {
+function HoursEditor({ hours, onChange, storeName }) {
   const [editing, setEditing] = React.useState(false);
   const [draft, setDraft] = React.useState(hours);
+  const [syncing, setSyncing] = React.useState(false);
+  const [syncResult, setSyncResult] = React.useState(null); // { hours, raw } | null
+  const [syncError, setSyncError] = React.useState(null);
   const todayKey = DAY_NAMES[new Date().getDay()];
+
+  const handleSync = async () => {
+    setSyncing(true);
+    setSyncError(null);
+    try {
+      const result = await fetchOsmHours(storeName);
+      setSyncResult(result);
+      setDraft(result.hours);
+      setEditing(true);
+    } catch (err) {
+      setSyncError(err.message || 'Errore di sincronizzazione');
+    } finally {
+      setSyncing(false);
+    }
+  };
 
   const handleSave = () => {
     onChange(draft);
@@ -173,19 +248,41 @@ function HoursEditor({ hours, onChange }) {
             </div>
           );
         })}
-        <button
-          onClick={() => { setDraft(hours); setEditing(true); }}
-          className="w-full mt-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-500 text-[11px] font-black active:scale-95 transition-transform flex items-center justify-center gap-1.5"
-        >
-          <span className="material-symbols-outlined !text-[16px]">edit</span>
-          Modifica orari
-        </button>
+        {syncError && (
+          <p className="text-[10px] font-bold text-red-500 text-center py-1">{syncError}</p>
+        )}
+        <div className="flex gap-2 mt-3">
+          <button
+            onClick={handleSync}
+            disabled={syncing}
+            className="flex-1 py-2 rounded-xl bg-blue-50 border border-blue-100 text-blue-500 text-[11px] font-black active:scale-95 transition-transform flex items-center justify-center gap-1.5 disabled:opacity-60"
+          >
+            {syncing
+              ? <span className="material-symbols-outlined !text-[16px] animate-spin">progress_activity</span>
+              : <span className="material-symbols-outlined !text-[16px]">sync</span>
+            }
+            {syncing ? 'Ricerca...' : 'Sincronizza orari'}
+          </button>
+          <button
+            onClick={() => { setDraft(hours); setEditing(true); setSyncResult(null); setSyncError(null); }}
+            className="flex-1 py-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-500 text-[11px] font-black active:scale-95 transition-transform flex items-center justify-center gap-1.5"
+          >
+            <span className="material-symbols-outlined !text-[16px]">edit</span>
+            Modifica orari
+          </button>
+        </div>
       </div>
     );
   }
 
   return (
     <div className="space-y-2 pt-3 border-t border-slate-100">
+      {syncResult && (
+        <div className="flex items-center gap-2 bg-blue-50 border border-blue-100 rounded-xl px-3 py-2 mb-2">
+          <span className="material-symbols-outlined !text-[14px] text-blue-500 shrink-0">location_on</span>
+          <p className="text-[10px] font-bold text-blue-600 leading-tight">Orari da OpenStreetMap · verifica e salva</p>
+        </div>
+      )}
       {DAY_ORDER.map(day => {
         const isToday = day === todayKey;
         const h = draft?.[day] || { open: '08:00', close: '20:00' };
@@ -209,7 +306,7 @@ function HoursEditor({ hours, onChange }) {
         );
       })}
       <div className="flex gap-2 mt-3">
-        <button onClick={() => setEditing(false)} className="flex-1 py-2.5 rounded-xl bg-slate-100 text-slate-600 text-[11px] font-black active:scale-95 transition-transform">Annulla</button>
+        <button onClick={() => { setEditing(false); setSyncResult(null); }} className="flex-1 py-2.5 rounded-xl bg-slate-100 text-slate-600 text-[11px] font-black active:scale-95 transition-transform">Annulla</button>
         <button onClick={handleSave} className="flex-1 py-2.5 rounded-xl bg-primary text-white text-[11px] font-black shadow-sm shadow-primary/30 active:scale-95 transition-transform">Salva</button>
       </div>
     </div>
@@ -273,7 +370,7 @@ const SupermarketDetail = () => {
   const kitchenProducts = storeProducts.filter(p => p.type === 'kitchen');
   const homeProducts    = storeProducts.filter(p => p.type !== 'kitchen');
   const toBuyCount      = storeProducts.filter(p => p.status === 'to-buy').length;
-  const expiredCount    = storeProducts.filter(p => p.expiryDate && new Date(p.expiryDate) < now).length;
+  const skippedCount    = storeProducts.filter(p => p.status === 'skipped').length;
   const expiringCount   = storeProducts.filter(p => {
     if (!p.expiryDate) return false;
     const diff = new Date(p.expiryDate) - now;
@@ -285,7 +382,7 @@ const SupermarketDetail = () => {
   const filterFn = (p) => {
     if (!activeFilter) return true;
     if (activeFilter === 'to-buy')   return p.status === 'to-buy';
-    if (activeFilter === 'expired')  return p.expiryDate && new Date(p.expiryDate) < now;
+    if (activeFilter === 'skipped')  return p.status === 'skipped';
     if (activeFilter === 'expiring') { const d = p.expiryDate && new Date(p.expiryDate) - now; return d > 0 && d < 2 * 86400000; }
     if (activeFilter === 'opened')   return p.status === 'opened';
     return true;
@@ -346,21 +443,21 @@ const SupermarketDetail = () => {
       <div className="px-4 mt-4 space-y-4">
 
         {/* Fidelity Card */}
-        <div className="relative overflow-hidden rounded-[32px] bg-gradient-to-br from-[#2D5A27] to-[#1E3A1A] p-6 text-white shadow-2xl">
-          <div className="absolute -right-8 -top-8 size-48 rounded-full bg-white/[0.05] blur-3xl pointer-events-none"></div>
-          <div className="absolute -left-12 -bottom-12 size-48 rounded-full bg-primary/10 blur-3xl pointer-events-none"></div>
+        <div className="relative overflow-hidden rounded-[32px] bg-gradient-to-br from-primary/10 via-white to-primary/5 p-6 border border-primary/15 shadow-sm">
+          <div className="absolute -right-8 -top-8 size-48 rounded-full bg-primary/5 blur-3xl pointer-events-none"></div>
+          <div className="absolute -left-12 -bottom-12 size-48 rounded-full bg-primary/8 blur-3xl pointer-events-none"></div>
           <div className="relative z-10">
             <div className="flex justify-between items-center mb-6">
               <div className="flex items-center gap-3">
-                <div className="size-10 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20">
-                  <span className="material-symbols-outlined text-xl">loyalty</span>
+                <div className="size-10 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20">
+                  <span className="material-symbols-outlined text-xl text-primary">loyalty</span>
                 </div>
                 <div>
-                  <h3 className="text-lg font-black tracking-tight">{supermarket.name}</h3>
-                  <p className="text-[10px] font-bold opacity-50">Fidelity Card</p>
+                  <h3 className="text-lg font-black tracking-tight text-slate-900">{supermarket.name}</h3>
+                  <p className="text-[10px] font-bold text-slate-400">Fidelity Card</p>
                 </div>
               </div>
-              <span className="material-symbols-outlined text-4xl opacity-15">contactless</span>
+              <span className="material-symbols-outlined text-4xl text-primary/15">contactless</span>
             </div>
 
             <div className="mb-6">
@@ -372,22 +469,22 @@ const SupermarketDetail = () => {
                     onChange={e => setNewCardNumber(e.target.value)}
                     onKeyDown={e => e.key === 'Enter' && handleUpdateCard()}
                     placeholder="Inserisci numero carta..."
-                    className="bg-white/10 border border-white/20 rounded-xl px-4 py-2 text-white placeholder:text-white/30 text-base font-black outline-none flex-1"
+                    className="bg-white border border-primary/20 rounded-xl px-4 py-2 text-slate-900 placeholder:text-slate-300 text-base font-black outline-none flex-1 focus:ring-2 focus:ring-primary/20"
                     autoFocus
                   />
-                  <button onClick={handleUpdateCard} className="size-10 rounded-xl bg-white text-primary flex items-center justify-center shadow-lg active:scale-95 transition-transform">
+                  <button onClick={handleUpdateCard} className="size-10 rounded-xl bg-primary text-white flex items-center justify-center shadow-lg active:scale-95 transition-transform">
                     <span className="material-symbols-outlined">check</span>
                   </button>
                 </div>
               ) : (
                 <div className="flex items-center gap-3 cursor-pointer group" onClick={() => setIsEditingCard(true)}>
                   <div>
-                    <p className="text-[9px] font-bold opacity-40 mb-1">Codice carta</p>
-                    <p className="text-2xl font-black tracking-[0.12em]">
+                    <p className="text-[9px] font-bold text-slate-400 mb-1">Codice carta</p>
+                    <p className="text-2xl font-black tracking-[0.12em] text-slate-900">
                       {supermarket.fidelityCard?.cardNumber || '—— —— ——'}
                     </p>
                   </div>
-                  <span className="material-symbols-outlined opacity-0 group-hover:opacity-40 transition-opacity !text-lg">edit</span>
+                  <span className="material-symbols-outlined opacity-0 group-hover:opacity-40 transition-opacity !text-lg text-slate-500">edit</span>
                 </div>
               )}
             </div>
@@ -395,14 +492,14 @@ const SupermarketDetail = () => {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <div className="size-2 rounded-full bg-green-400 shadow-[0_0_8px_rgb(74,222,128)]"></div>
-                <p className="text-[10px] font-black uppercase tracking-widest opacity-50">Pronto all'uso</p>
+                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Pronto all'uso</p>
               </div>
               <div className="flex gap-2">
-                <button onClick={() => navigate(`/scan/${id}`)} className="h-10 px-4 rounded-2xl bg-white/10 border border-white/20 flex items-center gap-1.5 text-[10px] font-bold hover:bg-white/20 active:scale-95 transition-all">
-                  <span className="material-symbols-outlined !text-base text-green-300">photo_camera</span>
+                <button onClick={() => navigate(`/scan/${id}`)} className="h-10 px-4 rounded-2xl bg-white border border-slate-100 flex items-center gap-1.5 text-[10px] font-bold text-slate-600 shadow-sm hover:bg-slate-50 active:scale-95 transition-all">
+                  <span className="material-symbols-outlined !text-base text-primary">photo_camera</span>
                   Scansiona
                 </button>
-                <button onClick={() => setIsShowingBarcode(true)} className="h-10 px-4 rounded-2xl bg-white text-primary flex items-center gap-1.5 text-[10px] font-bold shadow-xl shadow-black/20 active:scale-95 transition-all">
+                <button onClick={() => setIsShowingBarcode(true)} className="h-10 px-4 rounded-2xl bg-primary text-white flex items-center gap-1.5 text-[10px] font-bold shadow-md shadow-primary/20 active:scale-95 transition-all">
                   <span className="material-symbols-outlined !text-base">qr_code_2</span>
                   Mostra
                 </button>
@@ -443,6 +540,7 @@ const SupermarketDetail = () => {
             <HoursEditor
               hours={supermarket.hours}
               onChange={newHours => updateSupermarket(id, { hours: newHours })}
+              storeName={supermarket.name}
             />
           )}
         </div>
@@ -450,10 +548,10 @@ const SupermarketDetail = () => {
         {/* Stats Grid */}
         <div className="grid grid-cols-4 gap-2">
           {[
-            { label: 'Aperti',      value: openedCount,   icon: 'grocery', color: 'text-blue-500 bg-blue-50 border-blue-100',   activeColor: 'ring-2 ring-blue-400',   filter: 'opened'   },
-            { label: 'In scadenza', value: expiringCount, icon: 'schedule',        color: 'text-amber-600 bg-amber-50 border-amber-100', activeColor: 'ring-2 ring-amber-400',  filter: 'expiring' },
-            { label: 'Scaduti',     value: expiredCount,  icon: 'warning',         color: 'text-red-500 bg-red-50 border-red-100',       activeColor: 'ring-2 ring-red-400',    filter: 'expired'  },
-            { label: 'Da comprare', value: toBuyCount,    icon: 'shopping_cart',   color: 'text-primary bg-primary/8 border-primary/15', activeColor: 'ring-2 ring-primary',    filter: 'to-buy'   },
+            { label: 'Aperti',      value: openedCount,   icon: 'grocery',         color: 'text-blue-500 bg-blue-50 border-blue-100',     activeColor: 'ring-2 ring-blue-400',   filter: 'opened'   },
+            { label: 'In scadenza', value: expiringCount, icon: 'schedule',          color: 'text-amber-600 bg-amber-50 border-amber-100',   activeColor: 'ring-2 ring-amber-400',  filter: 'expiring' },
+            { label: 'Da comprare', value: skippedCount,  icon: 'add_shopping_cart', color: 'text-red-500 bg-red-50 border-red-100',         activeColor: 'ring-2 ring-red-400',    filter: 'skipped'  },
+            { label: 'In lista',    value: toBuyCount,    icon: 'shopping_cart',     color: 'text-orange-500 bg-orange-50 border-orange-100', activeColor: 'ring-2 ring-orange-400', filter: 'to-buy'   },
           ].map(stat => (
             <button
               key={stat.label}
