@@ -356,7 +356,7 @@ const Dashboard = () => {
                     <div className="flex flex-col items-end justify-between gap-2 shrink-0 min-h-[64px]" onClick={e => e.stopPropagation()}>
                       {product.expiryDate ? (
                         <span className={`text-[9px] font-black uppercase tracking-widest px-2 py-1 rounded-lg ${isBefore(new Date(product.expiryDate), new Date()) ? 'bg-red-50 text-red-500' : isBefore(new Date(product.expiryDate), addDays(new Date(), 3)) ? 'bg-orange-50 text-orange-500' : 'bg-slate-50 text-slate-400'}`}>
-                          {format(new Date(product.expiryDate), 'dd MMM', { locale: it })}
+                          {format(new Date(product.expiryDate), 'dd MMM yy', { locale: it })}
                         </span>
                       ) : (
                         <span className="text-[9px] font-black uppercase tracking-widest px-2 py-1 rounded-lg bg-slate-50 text-slate-300">N/D</span>
